@@ -1,0 +1,123 @@
+.mc-form /deep/ {
+  .mc-form-item {
+    display: flex;
+    align-items: center;
+    margin-right: 0px !important;
+  }
+
+  .el-form-item__content {
+    flex: 1;
+    min-width: 1px;
+  }
+
+  .el-select, .el-date-editor {
+    width: 100%;
+  }
+
+  .el-tag {
+    margin-right: 5px;
+  }
+
+  .mc-col {
+    float: left;
+    box-sizing: border-box;
+    padding: 0 5px;
+  }
+
+  .mc-form-text {
+    line-height: 28px;
+    height: 28px;
+    color: #606266;
+    white-space: nowrap;
+  }
+
+  .align-left {
+    text-align: left;
+  }
+
+  .align-right {
+    text-align: right;
+  }
+
+  .align-center {
+    text-align: center;
+  }
+
+  .range-input-editor {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+  
+    & /deep/ {
+      .el-input {
+        flex: 1;
+      }
+  
+      .el-input__inner {
+        border: none;
+      }
+    }
+  
+    .separator {
+      margin: 0 4px;
+    }
+  
+    &.disabled {
+      background: #f5f7fa;
+      color: #c0c4cc;
+    }
+  }
+
+  .form-tree {
+    display: inline-block;
+    width: 300px;
+    height: 200px;
+    padding-bottom: 10px;
+    overflow: auto;
+    border: 1px solid #DCDFE6;
+    border-radius: 5px;
+  }
+
+  .el-upload--picture-card, .el-upload-list__item {
+    width: 90px;
+    height: 90px;
+  }
+
+  .el-upload--picture-card {
+    line-height: 90px;
+    margin-bottom: 8px;
+  }
+
+  .el-upload__tip {
+    line-height: 1;
+  }
+
+  .uploader {
+    line-height: 0;
+
+    .img, .el-upload-list__item-thumbnail {
+      display: block;
+      width: 88px;
+      height: 88px;
+      object-fit: contain;
+      object-position: center center;
+    }
+  }
+
+  .uploader-readonly .el-upload {
+    display: none;
+  }
+
+  .is-success .range-input-editor {
+    border: 1px solid #67C23A;
+  }
+
+  .mc-checkbox-group, .mc-check-all {
+    display: inline-block;
+  }
+
+  .mc-check-all {
+    margin-right: 30px;
+  }
+}
