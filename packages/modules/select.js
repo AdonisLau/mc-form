@@ -29,7 +29,7 @@ export default {
         return;
       }
 
-      let ajax = this.config.options.ajax
+      let ajax = this.config.options.ajax;
       let key = ajax.remote;
 
       let q = { };
