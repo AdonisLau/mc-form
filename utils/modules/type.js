@@ -95,6 +95,14 @@ export function isInput(type) {
  * @returns {Boolean}
  * @description 判断组件是否需要字段field，一些修饰型的组件不需要field字段
  */
+const NO_FIELD_TYPES_MAP = Object.create(null);
+
+(['plaintext', 'title', 'component']).forEach(type => (NO_FIELD_TYPES_MAP[type] = true));
+
 export function fieldIsUnnecessary(type) {
-  return type === 'plaintext' || type === 'title' || type === 'component';
+  return !!NO_FIELD_TYPES_MAP[type];
+}
+
+export function addFieldIsUnnecessary(type) {
+  NO_FIELD_TYPES_MAP[type] = true;
 }

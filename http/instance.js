@@ -1,9 +1,9 @@
 let request = null;
 
-export function setInstance(instance) {
+export function setRequest(instance) {
   request = instance;
 }
 
-export function getInstance() {
+export function getRequest() {
   return request;
 }

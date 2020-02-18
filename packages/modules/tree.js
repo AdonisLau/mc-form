@@ -14,21 +14,15 @@ export default {
     }
   },
 
-  data() {
-    return {
-      equal: false
-    };
-  },
-
   watch: {
     value: 'setCheckedKeys'
   },
 
   methods: {
     notice(keys) {
-      this.equal = true;
+      this._equal = true;
       this.$emit('input', keys);
-      this.$nextTick(_ => (this.equal = false));
+      this.$nextTick(_ => (this._equal = false));
     },
 
     handleChange() {
@@ -42,7 +36,7 @@ export default {
 
     setCheckedKeys(keys) {
       // 来自自身的emit 不做修改 避免二次渲染
-      if (this.equal) {
+      if (this._equal) {
         return;
       }
 
@@ -106,6 +100,7 @@ export default {
   },
 
   mounted() {
+    this._equal = false;
     this.$nextTick(_ => this.setCheckedKeys(this.value));
   }
 };

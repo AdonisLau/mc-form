@@ -3,7 +3,6 @@
  */
 import PROPS_MIXIN from './props';
 import extend from '../utils/extend';
-import { getInstance } from '../http/instance';
 import { error, genFn, getJsonValue, isObject, isArray } from '../utils';
 
 export default {
@@ -115,7 +114,7 @@ export default {
       if (ajax.request) {
         promise = ajax.request(data, params);
       } else {
-        let request = getInstance();
+        let request = this.getRequest();
 
         promise = request(
           {

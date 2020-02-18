@@ -17,8 +17,7 @@ export default {
 
     return (
       <el-col
-        span={ ui.column }
-        style={ ui.aequilate ? { width: `calc(${ui.column / 24 * 100 + '%'} - ${ui.labelWidth})` } : {} }>
+        span={ ui.column }>
         <el-form-item prop={ field } labelWidth={ui.labelWidth} label={ label } class="mc-form-item">
           <el-date-picker
             size={ ui.size }

@@ -9,6 +9,8 @@ export default {
   action: '',
   // 设置上传的请求头部
   headers: {},
+  // 上传时附带的额外参数
+  data: {},
   // 是否支持多选文件
   multiple: false,
   // 上传的文件字段名

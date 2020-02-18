@@ -46,8 +46,7 @@ export default {
   data() {
     return {
       range0: null,
-      range1: null,
-      equal: false
+      range1: null
     };
   },
 
@@ -56,7 +55,7 @@ export default {
       immediate: true,
       handler(value) {
         // 来自自身的emit 不做修改 避免二次渲染
-        if (this.equal) {
+        if (this._equal) {
           return;
         }
 
@@ -78,12 +77,16 @@ export default {
 
       let emitVal = [this.range0, this.range1];
 
-      this.equal = true;
+      this._equal = true;
 
       this.$emit('input', emitVal);
 
-      this.$nextTick(_ => (this.equal = false));
+      this.$nextTick(_ => (this._equal = false));
     }
+  },
+
+  created() {
+    this._equal = false;
   }
 };
 </script>

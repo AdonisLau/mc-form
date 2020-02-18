@@ -21,6 +21,10 @@ export default {
 
     gutter: {
       type: Number
+    },
+
+    getRequest: {
+      type: Function
     }
   },
 

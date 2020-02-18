@@ -8,7 +8,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
     library: 'McForm',
-    libraryTarget: 'umd',
+    libraryTarget: 'commonjs2',
     globalObject: 'this'
   },
   module: {

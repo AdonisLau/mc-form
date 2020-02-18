@@ -6,6 +6,7 @@
       <el-upload
         v-if="multiple"
         class="uploader"
+        :data="config.upload.data"
         :class="{'uploader-readonly': disabled || readonly}"
         :action="config.upload.action"
         :accept="config.upload.accept"
@@ -30,6 +31,7 @@
         v-else
         ref="uploader"
         class="uploader"
+        :data="config.upload.data"
         :action="config.upload.action"
         :accept="config.upload.accept"
         :headers="config.upload.headers"
@@ -52,8 +54,8 @@
 </template>
 
 <script>
-import { isString } from '../../utils';
 import { PROPS_MIXIN } from '../../mixins';
+import { isString, isFunction } from '../../utils';
 
 export default {
   name: 'McUpload',
@@ -62,8 +64,7 @@ export default {
 
   data() {
     return {
-      files: [],
-      equal: false
+      files: []
     };
   },
 
@@ -79,7 +80,7 @@ export default {
 
       handler(urls) {
         // 来自自身的emit 不做修改 避免二次渲染
-        if (this.equal) {
+        if (this._equal) {
           return;
         }
 
@@ -115,14 +116,14 @@ export default {
         files = !files.length ? null : files[0].uri;
       }
 
-      this.equal = true;
+      this._equal = true;
       this.$emit('input', files);
 
       let component = this.$refs.item;
 
       component.$emit('el.form.change');
 
-      this.$nextTick(_ => (this.equal = false));
+      this.$nextTick(_ => (this._equal = false));
     },
 
     handleRemove(_, files) {
@@ -135,15 +136,15 @@ export default {
       }
     },
 
-    beforeUpload(blob) {
-      let limitSize = this.config.upload.limitSize;
+    handleBeforeUpload(blob) {
+      let config = this.config.upload;
+      let limitSize = config.limitSize;
 
       if (limitSize) {
         let lt = limitSize < blob.size / 1024 / 1024;
 
         if (lt) {
-          this.$message.error(`上传图片大小不能超过 ${limitSize}MB!`);
-          return false;
+          return Promise.reject(new Error(`上传图片大小不能超过 ${limitSize}MB!`));
         }
       }
 
@@ -161,7 +162,31 @@ export default {
         }
       }
 
-      return true;
+      return Promise.resolve();
+    },
+
+    beforeUpload(blob) {
+      let promise = null;
+      let config = this.config.upload;
+
+      if (isFunction(config.beforeUpload)) {
+        let ret = config.beforeUpload(blob);
+
+        if (ret === false) {
+          return false;
+        }
+
+        if (ret && isFunction(ret.then) && isFunction(ret.catch)) {
+          promise = ret;
+        }
+      }
+
+      return (promise || Promise.resolve())
+        .then(_ => this.handleBeforeUpload(blob))
+        .catch(e => {
+          this.$message.error(e.message);
+          return Promise.reject(e);
+        });
     },
 
     handleMultipleSuccess(res, file, files) {
@@ -211,6 +236,10 @@ export default {
     handleExceed() {
       return this.$message.error(`最多只能上传${this.config.upload.limit}张图片`);
     }
+  },
+
+  created() {
+    this._equal = false;
   }
 };
 </script>

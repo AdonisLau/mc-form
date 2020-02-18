@@ -10,8 +10,7 @@ export default {
 
   data() {
     return {
-      tags: [],
-      equal: false
+      tags: []
     };
   },
 
@@ -27,7 +26,7 @@ export default {
 
       handler(tags) {
         // 来自自身的emit 不做修改 避免二次渲染
-        if (this.equal) {
+        if (this._equal) {
           return;
         }
 
@@ -75,10 +74,10 @@ export default {
 
       this.tags.splice(index, 1);
 
-      this.equal = true;
+      this._equal = true;
 
       this.$emit('input', this.getValue());
-      this.$nextTick(_ => (this.equal = false));
+      this.$nextTick(_ => (this._equal = false));
     },
 
     handleClick() {
@@ -125,5 +124,9 @@ export default {
         </el-form-item>
       </el-col>
     );
+  },
+
+  created() {
+    this._equal = false;
   }
 };

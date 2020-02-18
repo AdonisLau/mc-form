@@ -15,8 +15,9 @@
         :rules="rules"
         :config="config"
         :gutter="gutter"
-        :ref="config.field || '__no_field__'"
+        :get-request="getRequest"
         :is="componentMap[config.type]"
+        :ref="config.field || '__no_field__'"
         :value="config.field ? state[config.field] : null"
         @input="value => handleChange(config.field, value)"
         @click="handleClick"
@@ -29,8 +30,8 @@
 
 <script>
 import COMPONENTS from './packages';
-import DEFAULT_CONFIGS from './configs';
-import { COMP_MAP } from './configs/map';
+import { getRequest } from './http/instance';
+import DEFAULT_CONFIGS, { componentMap } from './configs';
 import {
   genStateProps, genFn, error, fieldIsUnnecessary, firstUpperCase,
   setDefaultValue, isPicker, isInput, isOptions, isObject, isArray, isEmptyValue, isUndef, deepClone
@@ -60,8 +61,9 @@ export default {
       // 不做响应
       gutter,
       labelWidth,
+      getRequest,
       // 组件映射
-      componentMap: COMP_MAP
+      componentMap
     };
   },
 
@@ -147,33 +149,28 @@ export default {
     /**
      * 这里对各种选项做默认处理
      */
-    ...Object.keys(DEFAULT_CONFIGS).reduce((methods, option) => {
+    processDefaultConfig(option, property) {
+      let type = property.type;
       let upper = firstUpperCase(option);
       let types = { isInput, isPicker, isOptions };
 
-      methods['process' + upper] = function(property) {
-        let type = property.type;
+      if (
+        option !== 'ui' &&
+        option !== type &&
+        (!types['is' + upper] || !types['is' + upper](type))
+      ) {
+        delete property[option];
+        return;
+      }
 
-        if (
-          option !== 'ui' &&
-          option !== type &&
-          (!types['is' + upper] || !types['is' + upper](type))
-        ) {
-          delete property[option];
-          return;
-        }
+      let opts = property[option];
 
-        let opts = property[option];
+      if (!opts) {
+        opts = property[option] = {};
+      }
 
-        if (!opts) {
-          opts = property[option] = {};
-        }
-
-        setDefaultValue(opts, DEFAULT_CONFIGS[option]);
-      };
-
-      return methods;
-    }, {}),
+      setDefaultValue(opts, DEFAULT_CONFIGS[option]);
+    },
     /**
      * 将disabled readonly hidden closable转换为函数
      */
@@ -231,7 +228,7 @@ export default {
     /**
      * 配置项分组 用于后续排版使用
      */
-    joinIn(properties, property) {
+    join(properties, property) {
 
       if (!properties.length) {
         properties.push([property]);
@@ -273,12 +270,12 @@ export default {
         return error('property.type is required');
       }
 
-      if (!COMP_MAP[type]) {
+      if (!componentMap[type]) {
         return error(`property.type: ${type}, is not supported yet`);
       }
 
       if (!fieldIsUnnecessary(type) && isEmptyValue(property.field)) {
-        return error('property.field is required');
+        return error(`property.type: ${type}, 'field' is required`);
       }
 
       property = deepClone(property);
@@ -288,13 +285,13 @@ export default {
       this.processRules(rules, property);
       // 处理各种相关配置
       Object.keys(DEFAULT_CONFIGS).forEach(option => {
-        this['process' + firstUpperCase(option)](property);
+        this.processDefaultConfig(option, property);
       });
 
       this.setLabelWidth(property, labelWidth);
       this.processReactives(property);
       this.fieldToProperty(property);
-      this.joinIn(rows, property);
+      this.join(rows, property);
     },
     /**
      * 处理配置config
@@ -501,23 +498,7 @@ export default {
     reset() {
       this.setState(this._rawState, true);
 
-      this.$nextTick(_ => this.clear());
-    },
-
-    append(property) {
-      if (!isObject(property)) {
-        return error('property must be an object');
-      }
-
-      let { field, value } = property;
-
-      if (field) {
-        this._rawState[field] = deepClone(value);
-      }
-
-      this.processProperty(deepClone(property), this.rows, this.rules, this.state, this.labelWidth);
-
-      this.processWatches();
+      this.$nextTick(this.clear);
     }
   },
 
@@ -533,7 +514,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import './styles/index.scss';
 </style>
 

@@ -49,18 +49,22 @@ const config = {
 <mc-form :config="config"></mc-form>
 ```
 
+## 安装 ##
+
+```shell
+npm install mc-form -S
+```
+
 ## 使用 ##
 
 ```javascript
 // mc-form-installer.js
+import Vue from 'vue';
 import McForm from 'mc-form';
 
-export default function install(Vue) {
-  // 组件安装
-  Vue.component(McForm.name, McForm);
-}
+// 组件安装
+Vue.component(McForm.name, McForm);
 ```
-
 
 ## 关于dx表达式 ##
 
@@ -407,6 +411,8 @@ export default function install(Vue) {
 
 ### 7. 富文本 ###
 
+> 需要额外安装[mc-form-editor](https://github.com/AdonisLau/mc-form-editor)组件
+
 ```javascript
 {
   // 富文本
@@ -605,7 +611,7 @@ export default function install(Vue) {
 }
 ```
 
-> 使用自定义组件可接受以下 `props: ['state', 'gutter']`。同时，由于自组件不能修改父组件的数据，需要额外$emit，不能舒舒服服的用`v-model`，请自行衡量（如果真的觉得麻烦，版本支持的情况下使用`inject: ['dangerousState']`吧）。
+> 使用自定义组件可接受以下 `props: ['state', 'gutter']`。同时，由于自组件不能修改父组件的数据，需要额外$emit，不能舒舒服服的用`v-model`，请自行衡量。
 
 ```javascript
 // 修改对象属性值 this.$emit('update:object', 修改对象, 修改属姓名, 修改属性值);
@@ -615,6 +621,8 @@ this.$emit('update:object', this.state, { name: '刘伟健' });
 // 修改数组，增删 this.$emit('update:array', 修改数组, 数组方法名, 额外参数);
 this.$emit('update:array', this.state.users, 'push', { name: null, sex: null });
 ```
+
+> 当然，如果觉得以上写法麻烦，版本支持的情况下可以使用使用`inject: ['dangerousState']`，与`this.state`等价
 
 ## 修改默认配置 ##
 
