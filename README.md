@@ -61,6 +61,7 @@ npm install mc-form -S
 // mc-form-installer.js
 import Vue from 'vue';
 import McForm from 'mc-form';
+import 'mc-form/dist/assets/index.css';
 
 // 组件安装
 Vue.component(McForm.name, McForm);

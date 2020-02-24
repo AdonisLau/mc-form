@@ -13,3 +13,5 @@ yarn-error.log*
 *.sln
 *.history
 debug.log
+
+dist/index.scss.js

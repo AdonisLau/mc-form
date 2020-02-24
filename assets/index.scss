@@ -1,4 +1,4 @@
-.mc-form /deep/ {
+.mc-form {
   .mc-form-item {
     display: flex;
     align-items: center;
@@ -14,8 +14,14 @@
     width: 100%;
   }
 
-  .el-tag {
-    margin-right: 5px;
+  .mc-selector-tag {
+    margin-right: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  .mc-selector-btn {
+    margin: 2px 0;
   }
 
   .mc-col {
@@ -49,14 +55,12 @@
     border: 1px solid #dcdfe6;
     border-radius: 4px;
   
-    & /deep/ {
-      .el-input {
-        flex: 1;
-      }
-  
-      .el-input__inner {
-        border: none;
-      }
+    .el-input {
+      flex: 1;
+    }
+
+    .el-input__inner {
+      border: none;
     }
   
     .separator {

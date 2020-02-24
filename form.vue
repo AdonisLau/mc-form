@@ -475,7 +475,7 @@ export default {
         return;
       }
 
-      opt[prop] = genFn(expr);
+      this.$set(opt, prop, genFn(expr));
     },
 
     /**
@@ -490,7 +490,7 @@ export default {
         return;
       }
 
-      property.options[prop] = deepClone(options);
+      this.$set(property.options, prop, deepClone(options));
     },
     /**
      * 对外api 重置表单
@@ -513,8 +513,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-@import './styles/index.scss';
-</style>
-

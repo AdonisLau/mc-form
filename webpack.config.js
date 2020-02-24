@@ -1,12 +1,16 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: './index.js',
+  entry: {
+    'index': './index.js',
+    'index.scss': './assets/index.scss.js'
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
+    filename: '[name].js',
     library: 'McForm',
     libraryTarget: 'commonjs2',
     globalObject: 'this'
@@ -30,18 +34,9 @@ module.exports = {
       },
 
       {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          { loader: 'css-loader', options: { importLoaders: 1 } },
-          'postcss-loader'
-        ]
-      },
-
-      {
         test: /\.scss$/,
         use: [
-          'vue-style-loader',
+          MiniCssExtractPlugin.loader,
           { loader: 'css-loader', options: { importLoaders: 1 } },
           'postcss-loader',
           'sass-loader'
@@ -54,6 +49,10 @@ module.exports = {
   },
   plugins: [
     // 请确保引入这个插件！
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    // 抽离css为单独文件
+    new MiniCssExtractPlugin({
+      filename: 'assets/index.css'
+    })
   ]
 };

@@ -106,6 +106,7 @@ export default {
             this.tags.map((tag, index) => {
               return (
                 <el-tag
+                  class="mc-selector-tag"
                   key={ index }
                   size={ selector.size }
                   closable={ closable }
@@ -116,6 +117,7 @@ export default {
             })
           }
           { editable && <el-button
+            class="mc-selector-btn"
             size={ ui.size }
             type={ selector.type }
             icon={ selector.icon ? selector.icon : '' }
