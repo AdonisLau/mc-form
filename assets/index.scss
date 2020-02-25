@@ -52,24 +52,13 @@
   .range-input-editor {
     display: flex;
     align-items: center;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
   
     .el-input {
       flex: 1;
     }
-
-    .el-input__inner {
-      border: none;
-    }
   
     .separator {
       margin: 0 4px;
-    }
-  
-    &.disabled {
-      background: #f5f7fa;
-      color: #c0c4cc;
     }
   }
 
@@ -111,10 +100,6 @@
 
   .uploader-readonly .el-upload {
     display: none;
-  }
-
-  .is-success .range-input-editor {
-    border: 1px solid #67C23A;
   }
 
   .mc-checkbox-group, .mc-check-all {
