@@ -33,7 +33,7 @@ import COMPONENTS from './packages';
 import { getRequest } from './http/instance';
 import DEFAULT_CONFIGS, { componentMap } from './configs';
 import {
-  genStateProps, genFn, error, fieldIsUnnecessary, firstUpperCase,
+  genStateProps, genFn, genFns, error, fieldIsUnnecessary, firstUpperCase, isDxExpr,
   setDefaultValue, isPicker, isInput, isOptions, isObject, isArray, isEmptyValue, isUndef, deepClone
 } from './utils';
 
@@ -170,6 +170,42 @@ export default {
       }
 
       setDefaultValue(opts, DEFAULT_CONFIGS[option]);
+
+      if (isOptions(type)) {
+        this.processOptions(opts);
+      }
+    },
+    /**
+     * 处理options
+     */
+    processOptions(opts) {
+      // include exclude支持dx表达式
+      (['include', 'exclude']).forEach(prop => {
+        let value = opts[prop];
+
+        if (isEmptyValue(value)) {
+          return;
+        }
+
+        if (isDxExpr(value)) {
+          opts[prop] = genFn(value);
+        } else {
+          value = deepClone(value);
+          opts[prop] = _ => value;
+        }
+      });
+
+      let ajax = opts.ajax;
+
+      if (ajax) {
+        // 转换为函数
+        genFns(ajax.data);
+        genFns(ajax.params);
+
+        if (ajax.beforeSend) {
+          ajax.beforeSend = genFn(ajax.beforeSend);
+        }
+      }
     },
     /**
      * 将disabled readonly hidden closable转换为函数
@@ -490,7 +526,17 @@ export default {
         return;
       }
 
-      this.$set(property.options, prop, deepClone(options));
+      if (prop === 'data') {
+        this.$set(property.options, prop, deepClone(options));
+        return;
+      }
+
+      if (isDxExpr(options)) {
+        this.$set(property.options, prop, genFn(options));
+      } else {
+        options = deepClone(options);
+        this.$set(property.options, prop, _ => options);
+      }
     },
     /**
      * 对外api 重置表单

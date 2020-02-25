@@ -1,5 +1,5 @@
 import { error } from './console';
-import { isPrimitive } from './type';
+import { isPrimitive, isObject } from './type';
 
 /**
  * @param {String} expr
@@ -136,6 +136,16 @@ export function genFn(expr) {
   }
 
   return handleError(`invalid expression: ${expr}`);
+}
+
+export function genFns(object) {
+  if (!isObject(object)) {
+    return;
+  }
+
+  Object.keys(object).forEach(key => {
+    object[key] = genFn(object[key]);
+  });
 }
 
 const ESCAPE_RE = /[-.*+?^${}()|[\]/\\]/g;

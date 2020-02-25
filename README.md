@@ -216,9 +216,9 @@ Vue.component(McForm.name, McForm);
       // 使用后端接口返回的结果，根据该路径去获取选项数据，使用||做或处理
       path: 'data.content || data.recordList'
     },
-    // 包含的值
+    // 包含的值 支持dx表达式
     include: [],
-    // 排除的值
+    // 排除的值 支持dx表达式
     exclude: []
   },
 }

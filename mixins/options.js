@@ -3,7 +3,7 @@
  */
 import PROPS_MIXIN from './props';
 import extend from '../utils/extend';
-import { error, genFn, getJsonValue, isObject, isArray } from '../utils';
+import { error, getJsonValue, isObject, isArray, isFunction } from '../utils';
 
 export default {
   mixins: [PROPS_MIXIN],
@@ -21,14 +21,6 @@ export default {
     let ajax = opts.ajax;
 
     if (ajax) {
-      // 转换为函数
-      this.genFn(ajax.data);
-      this.genFn(ajax.params);
-
-      if (ajax.beforeSend) {
-        ajax.beforeSend = genFn(ajax.beforeSend);
-      }
-
       this.init();
     }
   },
@@ -40,16 +32,6 @@ export default {
   },
 
   methods: {
-    genFn(object) {
-      if (!isObject(object)) {
-        return;
-      }
-
-      Object.keys(object).forEach(key => {
-        object[key] = genFn(object[key]);
-      });
-    },
-
     genData(object) {
       let ret = {};
 
@@ -179,13 +161,13 @@ export default {
 
       let include = opts.include;
 
-      if (isArray(include)) {
+      if (isFunction(include) && isArray((include = include(this.state)))) {
         options = options.filter(option => include.some(val => val === option[opts.value]));
       }
 
       let exclude = opts.exclude;
 
-      if (isArray(exclude)) {
+      if (isFunction(exclude) && isArray((exclude = exclude(this.state)))) {
         options = options.filter(option => exclude.every(val => val !== option[opts.value]));
       }
 
