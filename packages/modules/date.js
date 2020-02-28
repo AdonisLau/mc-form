@@ -1,3 +1,4 @@
+import { isArray } from '../../utils';
 import { PROPS_MIXIN } from '../../mixins';
 
 /**
@@ -8,12 +9,19 @@ export default {
 
   mixins: [PROPS_MIXIN],
 
+  methods: {
+    isRange(type) {
+      return type.slice(-5) === 'range';
+    }
+  },
+
   render(h) {
     if (this.hidden) {
       return null;
     }
 
     let { ui, picker, field, label, type } = this.config;
+    let defaultTime = picker.defaultTime;
 
     return (
       <el-col
@@ -34,6 +42,7 @@ export default {
             rangeSeparator={ picker.rangeSeparator }
             valueFormat={ picker.valueFormat }
             pickerOptions={ picker.pickerOptions }
+            defaultTime={ this.isRange(type) ? defaultTime : (isArray(defaultTime) ? defaultTime[0] : defaultTime) }
             onInput={ value => this.$emit('input', value) }></el-date-picker>
         </el-form-item>
       </el-col>

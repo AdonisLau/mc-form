@@ -81,6 +81,8 @@ Vue.component(McForm.name, McForm);
 
 ```javascript
 {
+  // 是否开启特殊符号拼接的字段解析 后续详解
+  symbol: false,
   // el-row的gutter
   gutter: 10,
   // el-form的label-width
@@ -374,6 +376,8 @@ Vue.component(McForm.name, McForm);
     isRange: false,
     // 是否使用箭头进行时间选择，仅对<el-time-picker>有效
     arrowControl: false,
+  // 选中日期后的默认具体时刻 非范围选择时：string / 范围选择时：string[]
+  defaultTime: ['00:00:00', '00:00:00']
   }
 }
 ```
@@ -700,6 +704,16 @@ export default function install(Vue) {
   reset() {}
 }
 ```
+
+## 关于特殊符号拼接的字段 ##
+
+> 为了更方便地获取和设置`mc-form`的`state`，可以使用`symbol: true`开启以下特殊符号在字段中的特殊作用
+
+* `-`: 范围字段设置。例如: state['a-b'] = [ state.a, state.b ]，主要应用于range相关的组件
+* `>`: 路径字段设置。例如: state['a>b'] = state.a.b
+* `@`: 设置关联字段为数组。例如字段 tagIds@tagNames, state = {tagIds: [1,2,3], tagNames: ['刘', '伟', '健']}，会被设置为 state['tagIds@tagNames'] = [{id: 1, name: '刘'}, {id: 2, name: '伟'}, {id: 3, name: '健'}]
+* `&`: 设置关联字段为对象。例如字段 tagId&tagName, state = {tagId: 1, tagName: '刘伟健'}，会被设置为 state['tagId&tagName'] = { id: 1, name: '刘伟健' }
+
 
 ## 关于请求缓存 ##
 

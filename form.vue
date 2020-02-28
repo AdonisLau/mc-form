@@ -33,6 +33,7 @@ import COMPONENTS from './packages';
 import { getRequest } from './http/instance';
 import DEFAULT_CONFIGS, { componentMap } from './configs';
 import {
+  setSymbolsFromNormals, setNormalsFromSymbols,
   genStateProps, genFn, genFns, error, fieldIsUnnecessary, firstUpperCase, isDxExpr,
   setDefaultValue, isPicker, isInput, isOptions, isObject, isArray, isEmptyValue, isUndef, deepClone
 } from './utils';
@@ -50,6 +51,7 @@ export default {
 
   data() {
     let config = this.config;
+    let symbol = !!config.symbol;
     let gutter = isEmptyValue(config.gutter) ? 20 : config.gutter;
     let labelWidth = isEmptyValue(config.labelWidth) ? '80px' : config.labelWidth;
     let { state, rows, rules } = this.process(config, labelWidth);
@@ -59,6 +61,7 @@ export default {
       state,
       rules,
       // 不做响应
+      symbol,
       gutter,
       labelWidth,
       getRequest,
@@ -425,12 +428,18 @@ export default {
     /**
      * 对外api 获取state
      */
-    getState(prop) {
-      if (isEmptyValue(prop)) {
-        return deepClone(this.state);
+    getState(field) {
+      if (isEmptyValue(field)) {
+        let state = deepClone(this.state);
+
+        if (this.symbol) {
+          setNormalsFromSymbols(state);
+        }
+
+        return state;
       }
 
-      return deepClone(this.state[prop]);
+      return deepClone(this.state[field]);
     },
 
     /**
@@ -462,6 +471,11 @@ export default {
       }
 
       reset = !!reset;
+
+      if (this.symbol) {
+        setSymbolsFromNormals(state);
+      }
+
       let keys = Object.keys(state);
       // 生成map 后续使用
       this._state_map_ = keys.reduce((o, k) => (o[k] = true) && o, {});

@@ -21,4 +21,6 @@ export default {
   isRange: false,
   // 是否使用箭头进行时间选择，仅对<el-time-picker>有效
   arrowControl: false,
+  // 选中日期后的默认具体时刻 非范围选择时：string / 范围选择时：string[]
+  defaultTime: ['00:00:00', '00:00:00']
 };
