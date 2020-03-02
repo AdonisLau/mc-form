@@ -1,4 +1,11 @@
+import { hasOwn } from './object';
 import { isArray, isObject, isEmptyValue } from './type';
+
+const SYMBOL_RE = /[->&@]/;
+
+function isSymbolField(field) {
+  return !isEmptyValue(field) && SYMBOL_RE.test(field);
+}
 
 const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
   /**
@@ -14,6 +21,11 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
     }
 
     let fields = field.split('-');
+
+    if (!hasOwn(state, fields[0]) && !hasOwn(state, fields[1])) {
+      return true;
+    }
+
     let endValue = state[fields[1]];
     let startValue = state[fields[0]];
 
@@ -41,6 +53,11 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
 
     let data = state;
     let paths = field.split('>');
+
+    if (!hasOwn(state, paths[0])) {
+      return true;
+    }
+
     let end = paths.length - 1;
 
     for (let i = 0; i < end; i++) {
@@ -77,8 +94,13 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
     }
 
     let fields = field.split('@');
+
+    if (!hasOwn(state, fields[0]) && !hasOwn(state, fields[1])) {
+      return true;
+    }
+
     let ids = state[fields[0]];
-    let names = state[field[1]];
+    let names = state[fields[1]];
 
     if (isEmptyValue(ids) && isEmptyValue(names)) {
       state[field] = null;
@@ -114,8 +136,13 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
     }
 
     let fields = field.split('&');
+
+    if (!hasOwn(state, fields[0]) && !hasOwn(state, fields[1])) {
+      return true;
+    }
+
     let id = state[fields[0]];
-    let name = state[field[1]];
+    let name = state[fields[1]];
 
     if (isEmptyValue(id) && isEmptyValue(name)) {
       state[field] = null;
@@ -136,8 +163,10 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
  * @description 从普通字段中获取值并赋值到符号字段中
  */
 export function setSymbolsFromNormals(state) {
-  Object.keys(state).forEach(field => {
-    SET_SYMBOLS_FROM_NORMALS_INTERATORS.some(interator => interator(field, state));
+  this.config.properties.forEach(({ field }) => {
+    if (isSymbolField(field)) {
+      SET_SYMBOLS_FROM_NORMALS_INTERATORS.some(interator => interator(field, state));
+    }
   });
 
   return state;
