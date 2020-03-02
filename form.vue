@@ -77,6 +77,8 @@ export default {
   },
 
   methods: {
+    setSymbolsFromNormals,
+    setNormalsFromSymbols,
     /**
      * set [field] to [value] if undefined
      */
@@ -433,7 +435,7 @@ export default {
         let state = deepClone(this.state);
 
         if (this.symbol) {
-          setNormalsFromSymbols(state);
+          this.setNormalsFromSymbols(state);
         }
 
         return state;
@@ -473,7 +475,7 @@ export default {
       reset = !!reset;
 
       if (this.symbol) {
-        setSymbolsFromNormals(state);
+        this.setSymbolsFromNormals(state);
       }
 
       let keys = Object.keys(state);
