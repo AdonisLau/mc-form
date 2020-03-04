@@ -216,6 +216,7 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
       return false;
     }
 
+    let data = state;
     let value = state[field];
     let paths = field.split('>');
     let end = paths.length - 1;
@@ -223,14 +224,14 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
     for (let i = 0; i < end; i++) {
       let path = paths[i];
 
-      if (!isObject(state[path])) {
-        state[path] = {};
+      if (!isObject(data[path]) && !isArray(data[path])) {
+        data[path] = {};
       }
 
-      state = state[path];
+      data = data[path];
     }
 
-    state[paths[end]] = value;
+    data[paths[end]] = value;
 
     delete state[field];
 
@@ -302,7 +303,9 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
  */
 export function setNormalsFromSymbols(state) {
   Object.keys(state).forEach(field => {
-    SET_NORMALS_FROM_SYMBOLS_INTERATORS.some(interator => interator(field, state));
+    if (isSymbolField(field)) {
+      SET_NORMALS_FROM_SYMBOLS_INTERATORS.some(interator => interator(field, state));
+    }
   });
 
   return state;

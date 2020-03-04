@@ -8,82 +8,62 @@ export default {
 
   mixins: [PROPS_MIXIN],
 
-  data() {
-    return {
-      tags: []
-    };
-  },
-
   computed: {
     closable() {
       return this.config.selector.closable(this.state);
-    }
-  },
+    },
 
-  watch: {
-    value: {
-      immediate: true,
+    tags() {
+      let tags = this.value;
 
-      handler(tags) {
-        // 来自自身的emit 不做修改 避免二次渲染
-        if (this._equal) {
-          return;
-        }
-
-        if (!tags) {
-          this.tags = [];
-          return;
-        }
-
-        if (!isArray(tags)) {
-          tags = [tags];
-        }
-
-        let selector = this.config.selector;
-
-        this.tags = tags.map(tag => {
-          if (!isObject(tag)) {
-            tag = {
-              [selector.label]: tag
-            };
-          }
-
-          return deepClone(tag);
-        });
+      if (!tags) {
+        return [];
       }
+
+      if (!isArray(tags)) {
+        tags = [tags];
+      }
+
+      let label = this.config.selector.label;
+
+      return tags.map(tag => {
+        if (!isObject(tag)) {
+          tag = {
+            [label]: tag
+          };
+        }
+
+        return tag;
+      });
     }
   },
 
   methods: {
-    getValue() {
-      let tags = null;
+    genValue(tags) {
+      let val = null;
       let selector = this.config.selector;
 
       if (isArray(this.value)) {
-        tags = deepClone(this.tags);
+        val = deepClone(tags);
       } else if (isObject(this.value)) {
-        this.tags.length && (tags = deepClone(this.tags[0]));
+        tags.length && (val = deepClone(tags[0]));
       } else {
-        this.tags.length && (tags = this.tags[0][selector.label]);
+        tags.length && (val = tags[0][selector.label]);
       }
 
-      return tags;
+      return val;
     },
 
     handleClose(index) {
+      let tags = this.tags.filter((_, i) => i !== index);
 
-      this.tags.splice(index, 1);
-
-      this._equal = true;
-
-      this.$emit('input', this.getValue());
-      this.$nextTick(_ => (this._equal = false));
+      this.$emit('input', this.genValue(tags));
     },
 
     handleClick() {
       let config = this.config;
 
-      this.$emit('click', config.selector.event, { field: config.field, value: this.getValue() });
+      this.$emit('click', config.selector.event, { field: config.field, value: this.genValue(this.tags) });
     }
   },
 
@@ -126,9 +106,5 @@ export default {
         </el-form-item>
       </el-col>
     );
-  },
-
-  created() {
-    this._equal = false;
   }
 };

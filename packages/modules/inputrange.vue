@@ -6,25 +6,23 @@
       <div class="range-input-editor" :class="disabled ? 'disabled' : ''">
         <el-input
           :size="config.ui.size"
-          :value="range0"
+          v-model="range0"
           :readonly="readonly"
           :disabled="disabled"
           :type="config.inputrange.type"
           :clearable="config.ui.clearable"
-          :placeholder="config.inputrange.startPlaceholder"
-          @input="value => handleInput('range0', value)"></el-input>
+          :placeholder="config.inputrange.startPlaceholder"></el-input>
 
         <span class="separator">{{ config.inputrange.rangeSeparator }}</span>
 
         <el-input
           :size="config.ui.size"
-          :value="range1"
+          v-model="range1"
           :readonly="readonly"
           :disabled="disabled"
           :type="config.inputrange.type"
           :clearable="config.ui.clearable"
-          :placeholder="config.inputrange.endPlaceholder"
-          @input="value => handleInput('range1', value)"></el-input>
+          :placeholder="config.inputrange.endPlaceholder"></el-input>
       </div>
     </el-form-item>
   </el-col>
@@ -43,50 +41,38 @@ export default {
 
   mixins: [PROPS_MIXIN],
 
-  data() {
-    return {
-      range0: null,
-      range1: null
-    };
-  },
-
-  watch: {
-    value: {
-      immediate: true,
-      handler(value) {
-        // 来自自身的emit 不做修改 避免二次渲染
-        if (this._equal) {
-          return;
-        }
+  computed: {
+    range0: {
+      get() {
+        let value = this.value;
 
         if (!isArray(value)) {
-          this.range0 = null;
-          this.range1 = null;
-          return;
+          return null;
         }
 
-        this.range0 = value[0];
-        this.range1 = value[1];
+        return value[0];
+      },
+
+      set(v) {
+        this.$emit('input', [v, this.range1]);
+      }
+    },
+
+    range1: {
+      get() {
+        let value = this.value;
+
+        if (!isArray(value)) {
+          return null;
+        }
+
+        return value[1];
+      },
+
+      set(v) {
+        this.$emit('input', [this.range0, v]);
       }
     }
-  },
-
-  methods: {
-    handleInput(prop, value) {
-      this[prop] = value;
-
-      let emitVal = [this.range0, this.range1];
-
-      this._equal = true;
-
-      this.$emit('input', emitVal);
-
-      this.$nextTick(_ => (this._equal = false));
-    }
-  },
-
-  created() {
-    this._equal = false;
   }
 };
 </script>

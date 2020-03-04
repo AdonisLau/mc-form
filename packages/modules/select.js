@@ -1,3 +1,4 @@
+import { error } from '../../utils';
 import { OPTIONS_MIXIN } from '../../mixins';
 
 /**
@@ -41,7 +42,7 @@ export default {
         q.params = { [key]: kw };
       }
 
-      this.fetchOptions(q).catch(e => this.$message.error(e.message));
+      this.fetchOptions(q).catch(e => error('fetch options failed'));
     }
   },
 
