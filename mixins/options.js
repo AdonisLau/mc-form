@@ -190,7 +190,7 @@ export default {
         return;
       }
 
-      this.fetchOptions().catch(e => this.$message.error(e.message));
+      this.fetchOptions().catch(e => error('fetch options failed'));
     }
   },
 };

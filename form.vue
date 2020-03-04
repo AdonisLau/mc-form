@@ -83,10 +83,12 @@ export default {
      * set [field] to [value] if undefined
      */
     processState(state, property) {
-      let field = property.field;
+      if (!fieldIsUnnecessary(property.type)) {
+        let field = property.field;
 
-      if (field && isUndef(state[field])) {
-        this.$set(state, field, property.value);
+        if (field && isUndef(state[field])) {
+          this.$set(state, field, property.value);
+        }
       }
       // 删掉
       delete property.value;
@@ -95,11 +97,12 @@ export default {
      * set [field] to [rules]
      */
     processRules(rules, property) {
+      let field = property.field;
       let _rules = property.rules;
 
       delete property.rules;
 
-      if (!isArray(_rules)) {
+      if (isEmptyValue(field) || fieldIsUnnecessary(property.type) || !isArray(_rules)) {
         return;
       }
 
@@ -125,7 +128,7 @@ export default {
         };
       });
 
-      this.$set(rules, property.field, _rules);
+      this.$set(rules, field, _rules);
     },
     /**
      * 处理关联字段，绑定到watch，由于存在特殊字符，会在created中使用$watch监测
@@ -402,7 +405,7 @@ export default {
         // 如果state存在的话，就不重新设置
         if (!map || !map[key]) {
           try {
-            state[key] = linked.value(state);
+            this.$set(state, key, linked.value(state));
           } catch (e) {
             error(e.message);
             return;
@@ -419,9 +422,7 @@ export default {
           // 这里加个nextTick 因为子组件的数据尚未更新
           this.$nextTick(_ => {
             components.forEach(component => {
-              component.fetchOptions().catch(e => {
-                this.$message.error(e.message);
-              });
+              component.fetchOptions().catch(_ => error('fetch options failed'));
             });
           });
         }
