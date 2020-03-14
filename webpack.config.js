@@ -2,18 +2,33 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const M = {
+  umd: {
+    libraryTarget: 'umd',
+    filename: (chunkData) => {
+      return chunkData.chunk.name === 'mcform' ? '[name].umd.js': '[name].js';
+    }
+  },
+
+  commonjs2: {
+    filename: '[name].js',
+    libraryTarget: 'commonjs2'
+  }
+};
+
+const T = process.env.OUTPUT_TARGET;
+
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   entry: {
-    'index': './index.js',
+    'mcform': './index.js',
     'index.scss': './assets/index.scss.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
     library: 'McForm',
-    libraryTarget: 'commonjs2',
-    globalObject: 'this'
+    globalObject: 'this',
+    ...M[T]
   },
   module: {
     rules: [

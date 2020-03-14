@@ -10,7 +10,7 @@
     min-width: 1px;
   }
 
-  .el-select, .el-date-editor {
+  .el-select, .el-date-editor, .el-input-number {
     width: 100%;
   }
 
@@ -72,7 +72,7 @@
     border-radius: 5px;
   }
 
-  .el-upload--picture-card, .el-upload-list__item {
+  .el-upload--picture-card, .el-upload-list--picture-card .el-upload-list__item {
     width: 90px;
     height: 90px;
   }
