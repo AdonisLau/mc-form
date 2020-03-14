@@ -19,6 +19,8 @@ export default {
   limit: 0,
   // tip
   tip: '',
+  // 文件列表的类型
+  listType: 'picture-card',
   // 文件大小限制
   limitSize: 1,
   // 请求完成后执行的回调，返回一个对象。success: 是否上传成功，message: 失败后的提示语，uri: 文件上传路径

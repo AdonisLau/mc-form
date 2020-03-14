@@ -116,8 +116,6 @@ Vue.component(McForm.name, McForm);
     size: 'mini',
     // 强制换行，无视内部的排列规则
     wrap: false,
-    // 表单组件 是否等宽 如果是 将减去labelWidth
-    aequilate: false,
     // 是否占位，此处用于与前一个构成if-else，若为false，不进行column计算
     occupation: true,
     // 是否隐藏 支持dx表达式
@@ -175,7 +173,39 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 2. 单选框 ##
+### 2. inputnumber ###
+
+```javascript
+{
+  // 文本框类型
+  type: 'inputnumber',
+  // 字段
+  field: 'field',
+  //字段初始值
+  value: null,
+  // label
+  label: '文本框'
+
+  inputnumber: {
+    // 设置计数器允许的最小值
+    min: -Infinity,
+    // 设置计数器允许的最大值
+    max: Infinity,
+    // 计数器步长
+    step: 1,
+    // 是否只能输入 step 的倍数
+    stepStrictly: false,
+    // 数值精度
+    precision: void 0,
+    // 是否使用控制按钮
+    controls: true,
+    // 控制按钮位置
+    controlsPosition: ''
+  }
+}
+```
+
+### 3. 单选框 ##
 
 ```javascript
 {
@@ -226,7 +256,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 3. 多选框 ##
+### 4. 多选框 ##
 
 ```javascript
 {
@@ -279,7 +309,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 4. 选择框 ##
+### 5. 选择框 ##
 
 ```javascript
 {
@@ -344,7 +374,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 5. 日期时间选择器 ###
+### 6. 日期时间选择器 ###
 
 ```javascript
 {
@@ -382,7 +412,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 6.选择器 ###
+### 7.选择器 ###
 
 > 该组件是为了类似于`点击按钮，出现弹窗后选择`的类似需求，需要配合`setState`和`selector.event`使用。界面形式为左边`el-tag`，右边`el-button`
 
@@ -414,7 +444,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 7. 富文本 ###
+### 8. 富文本 ###
 
 > 需要额外安装[mc-form-editor](https://github.com/AdonisLau/mc-form-editor)组件
 
@@ -472,7 +502,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 8. 文本范围 ###
+### 9. 文本范围 ###
 
 ```javascript
 {
@@ -498,7 +528,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 9. 图片上传 ###
+### 10. 图片上传 ###
 
 ```javascript
 {
@@ -526,6 +556,8 @@ Vue.component(McForm.name, McForm);
     limit: 0,
     // tip
     tip: '',
+    // 文件列表的类型
+    listType: 'picture-card',
     // 文件大小限制
     limitSize: 1,
     // 请求完成后执行的回调，返回一个对象。success: 是否上传成功，message: 失败后的提示语，uri: 文件上传路径
@@ -534,7 +566,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 10. 树 ###
+### 11. 树 ###
 
 > 抱歉，尚未实现异步加载
 
@@ -585,7 +617,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 11. 纯文本 ###
+### 12. 纯文本 ###
 
 > 纯文本，可用于写个表头或者描述性文本
 
@@ -604,7 +636,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 12. 自定义组件 ###
+### 13. 自定义组件 ###
 
 > 众所周知，产品的需求是相当骚的，为了实现某些骚操作，开放自定义组件的功能供开发者使用。
 

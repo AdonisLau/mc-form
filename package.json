@@ -1,13 +1,13 @@
 {
   "name": "mc-form",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "a configurable form component base on element-ui, wangEditor",
-  "main": "dist/index.js",
+  "main": "dist/mcform.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "cross-env OUTPUT_TARGET=umd webpack --config webpack.config.js && cross-env OUTPUT_TARGET=commonjs2 webpack --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,6 +33,7 @@
     "@vue/babel-preset-jsx": "^1.1.2",
     "autoprefixer": "^9.7.4",
     "babel-loader": "^8.0.6",
+    "cross-env": "^7.0.2",
     "css-loader": "^3.4.2",
     "cssnano": "^4.1.10",
     "mini-css-extract-plugin": "^0.9.0",

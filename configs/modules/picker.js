@@ -16,7 +16,7 @@ export default {
   // 值的展示格式化参数
   valueFormat: 'timestamp',
   // 当前时间日期选择器特有的选项
-  pickerOptions: null,
+  pickerOptions: {},
   // 是否为时间范围选择，仅对<el-time-picker>有效
   isRange: false,
   // 是否使用箭头进行时间选择，仅对<el-time-picker>有效

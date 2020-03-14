@@ -12,6 +12,7 @@ export let componentMap = {
   selector: 'mc-selector',
   checkbox: 'mc-checkbox',
   inputrange: 'mc-input-range',
+  inputnumber: 'mc-input-number',
   component: 'mc-component'
 };
 
