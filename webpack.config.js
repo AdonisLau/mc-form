@@ -6,7 +6,7 @@ const M = {
   umd: {
     libraryTarget: 'umd',
     filename: (chunkData) => {
-      return chunkData.chunk.name === 'mcform' ? '[name].umd.js': '[name].js';
+      return chunkData.chunk.name === 'mc-form' ? '[name].umd.js': '[name].js';
     }
   },
 
@@ -19,9 +19,9 @@ const M = {
 const T = process.env.OUTPUT_TARGET;
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: {
-    'mcform': './index.js',
+    'mc-form': './index.js',
     'index.scss': './assets/index.scss.js'
   },
   output: {
