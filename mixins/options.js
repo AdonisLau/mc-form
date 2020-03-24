@@ -3,7 +3,7 @@
  */
 import PROPS_MIXIN from './props';
 import extend from '../utils/extend';
-import { error, getJsonValue, isObject, isArray, isFunction } from '../utils';
+import { error, getJsonValue, isObject, isArray, isFunction, isUndef } from '../utils';
 
 export default {
   mixins: [PROPS_MIXIN],
@@ -109,17 +109,27 @@ export default {
       }
 
       return promise.then(res => {
-        let path = ajax.path || 'recordList || content';
-        let paths = path.split(/\s*\|\|\s*/);
+        let path = ajax.path;
+
+        if (isUndef(path)) {
+          path = 'recordList || content';
+        }
+
         let data = null;
 
-        paths.some(prop => {
-          data = getJsonValue(res, prop);
+        if (!path) {
+          data = res;
+        } else {
+          let paths = path.split(/\s*\|\|\s*/);
 
-          if (data) {
-            return true;
-          }
-        });
+          paths.some(prop => {
+            data = getJsonValue(res, prop);
+
+            if (data) {
+              return true;
+            }
+          });
+        }
 
         this.loading = false;
         // 这里对额外参数进行处理

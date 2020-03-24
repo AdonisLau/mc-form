@@ -1,4 +1,4 @@
-import { error } from '../../utils';
+import { error, deepClone } from '../../utils';
 import { OPTIONS_MIXIN } from '../../mixins';
 
 /**
@@ -57,21 +57,21 @@ export default {
     let opts = config.options;
     let select = config.select;
     let options = this.getOptions();
+    let attrs = { attrs: deepClone(select) };
 
     return (
       <el-col
         span={ ui.column }>
-        <el-form-item prop={ config.field } labelWidth={ui.labelWidth} label={ config.label } class="mc-form-item">
+        <el-form-item prop={ config.field } labelWidth={ ui.labelWidth } label={ config.label } class="mc-form-item">
           <el-select
+            { ...attrs }
             size={ ui.size }
             value={ this.value }
             remote={ this.remote }
             loading={ this.loading }
-            multiple={ select.multiple }
             readonly={ this.readonly }
             disabled={ this.disabled }
             clearable={ ui.clearable }
-            filterable={ select.filterable }
             placeholder={ ui.placeholder }
             remote-method={ this.handleRemote }
             onInput={ value => this.$emit('input', value) }>

@@ -505,6 +505,10 @@ export default {
       this.$nextTick(_ => (this._state_map_ = null));
     },
 
+    replaceState(state) {
+      this.setState(state, true);
+    },
+
     /**
      * 对外api，设置disabled, readonly, hidden, closable
      * {
@@ -567,6 +571,7 @@ export default {
 
   created() {
     this.processWatches();
+
     // 标识是否在setState
     this._state_map_ = null;
   },

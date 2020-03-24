@@ -42,6 +42,7 @@ export default {
 
     let config = this.config;
     let ui = config.ui;
+    let cb = config.checkbox;
 
     let opts = config.options;
     let options = this.getOptions();
@@ -61,13 +62,23 @@ export default {
           {
             opts.checkAll && !!options.length && (
               <div class="mc-check-all">
-                <el-checkbox readonly={ this.readonly } disabled={ this.disabled } value={ checkAll } indeterminate={ indeterminate } onInput={ this.handleCheckAllChange }>全选</el-checkbox>
+                <el-checkbox
+                  border={ cb.border }
+                  readonly={ this.readonly }
+                  disabled={ this.disabled }
+                  value={ checkAll }
+                  indeterminate={ indeterminate }
+                  onInput={ this.handleCheckAllChange }>全选</el-checkbox>
               </div>
             )
           }
 
           <el-checkbox-group
             class="mc-checkbox-group"
+            min={ cb.min }
+            max={ cb.max }
+            fill={ cb.fill }
+            textColor={ cb.textColor }
             size={ ui.size }
             value={ this.value }
             readonly={ this.readonly }
@@ -78,6 +89,7 @@ export default {
                 return (
                   <el-checkbox
                     key={ index }
+                    border={ cb.border }
                     label={ option[opts.value] }>{ option[opts.label] }</el-checkbox>
                 );
               })

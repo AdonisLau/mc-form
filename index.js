@@ -25,9 +25,7 @@ export function setDefaultConfigs(path, value) {
       let defaultConfig = DEFAULT_CONFIGS[key];
 
       Object.keys(config).forEach(prop => {
-        if (hasOwn(defaultConfig, prop)) {
-          defaultConfig[prop] = deepClone(config[prop]);
-        }
+        defaultConfig[prop] = deepClone(config[prop]);
       });
     }
   });

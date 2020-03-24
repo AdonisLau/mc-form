@@ -1,7 +1,7 @@
 {
   "name": "mc-form",
-  "version": "1.0.6",
-  "description": "a configurable form component base on element-ui, wangEditor",
+  "version": "1.0.7",
+  "description": "a configurable form component base on element-ui",
   "main": "dist/mc-form.js",
   "directories": {
     "lib": "lib"

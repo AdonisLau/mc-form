@@ -1,3 +1,4 @@
+import { deepClone } from '../../utils';
 import { PROPS_MIXIN } from '../../mixins';
 
 /**
@@ -14,21 +15,16 @@ export default {
     }
 
     let { ui, inputnumber, field, label } = this.config;
+    let attrs = { attrs: deepClone(inputnumber) };
 
     return (
       <el-col
         span={ ui.column }>
-        <el-form-item prop={ field } labelWidth={ui.labelWidth} label={ label } class="mc-form-item">
+        <el-form-item prop={ field } labelWidth={ ui.labelWidth } label={ label } class="mc-form-item">
           <el-input-number
+            { ...attrs }
             size={ ui.size }
             value={ this.value || 0 }
-            min={ inputnumber.min }
-            max={ inputnumber.max }
-            step={ inputnumber.step }
-            stepStrictly={ inputnumber.stepStrictly }
-            precision={ inputnumber.precision }
-            controls={ inputnumber.controls }
-            controlsPosition={ inputnumber.controlsPosition }
             readonly={ this.readonly }
             disabled={ this.disabled }
             clearable={ ui.clearable }
