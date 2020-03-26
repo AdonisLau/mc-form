@@ -1,53 +1,13 @@
 ## 介绍 ##
 
-> `mc-form`，一个表单通用组件，目的是通过一份配置文件生成一个表单，减少重复性的工作。由于`mc-form`产生于雪花项目，所以很多默认配置都是按照雪花项目的来。例如，生成一个包含输入框和选择框的表单配置如下：
+> `mc-form`，一个表单通用组件，目的是通过一份配置文件生成一个表单，减少重复性的工作。demo如下
 
-```javascript
-const config = {
-  gutter: 20,
-  labelWidth: '120px',
-
-  properties: [
-    {
-      field: 'code',
-      value: null,
-      label: '门店编码',
-      type: 'text',
-      ui: {
-        column: 12
-      }
-    },
-
-    {
-      field: 'type',
-      value: null,
-      label: '门店类型',
-      type: 'select',
-      ui: {
-        column: 12
-      },
-
-      options: {
-        data: [
-          {
-            label: '春纪',
-            value: 1
-          },
-
-          {
-            label: '丸美',
-            value: 2
-          }
-        ]
-      }
-    }
-  ]
-};
-```
-
-```html
-<mc-form :config="config"></mc-form>
-```
+<p class="codepen" data-height="265" data-theme-id="light" data-default-tab="js,result" data-user="AdonisLau" data-slug-hash="bGdvxLQ" style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="mc-form-demo">
+  <span>See the Pen <a href="https://codepen.io/AdonisLau/pen/bGdvxLQ">
+  mc-form-demo</a> by mc-form (<a href="https://codepen.io/AdonisLau">@AdonisLau</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
 
 ## 安装 ##
 
