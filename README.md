@@ -1,13 +1,6 @@
 ## 介绍 ##
 
-> `mc-form`，一个表单通用组件，目的是通过一份配置文件生成一个表单，减少重复性的工作。demo如下
-
-<p class="codepen" data-height="265" data-theme-id="light" data-default-tab="js,result" data-user="AdonisLau" data-slug-hash="bGdvxLQ" style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="mc-form-demo">
-  <span>See the Pen <a href="https://codepen.io/AdonisLau/pen/bGdvxLQ">
-  mc-form-demo</a> by mc-form (<a href="https://codepen.io/AdonisLau">@AdonisLau</a>)
-  on <a href="https://codepen.io">CodePen</a>.</span>
-</p>
-<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+> `mc-form`，一个表单通用组件，目的是通过一份配置文件生成一个表单，减少重复性的工作。[demo](https://codepen.io/AdonisLau/pen/bGdvxLQ)。
 
 ## 安装 ##
 
@@ -26,14 +19,6 @@ import 'mc-form/dist/assets/index.css';
 // 组件安装
 Vue.component(McForm.name, McForm);
 ```
-
-## 关于dx表达式 ##
-
-> dx表达式的存在是为了实现数据关联的效果。例如，当某字段为空时不允许编辑 `disabled: 'dx:{{ !$state.field }}'`，具有以下特点:
-
-* 格式如：'dx:{{ expression }}'
-* 特殊字段`$state`代表表单(`el-form`)的`model`对象
-* 不允许赋值的存在，比如 'dx{{ $state.name = 1 }}'是不合法的
 
 ## 组件属性: `config` ##
 
@@ -111,7 +96,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 1. 文本框 ###
+### 1. 文本框 [demo](https://codepen.io/AdonisLau/pen/KKprNbx) ###
 
 ```javascript
 {
@@ -125,47 +110,31 @@ Vue.component(McForm.name, McForm);
   label: '文本框'
 
   input: {
-    // 输入框行数，只对 type="textarea" 有效
-    rows: 2,
-    // 自适应内容高度，只对 type="textarea" 有效，可传入对象，如，{ minRows: 2, maxRows: 6 }
-    autosize: false
+    // 支持所有el-input的相关属性，驼峰命名
   }
 }
 ```
 
-### 2. inputnumber ###
+### 2. inputnumber [demo](https://codepen.io/AdonisLau/pen/poJQRWX) ###
 
 ```javascript
 {
-  // 文本框类型
+  // inputnumber
   type: 'inputnumber',
   // 字段
   field: 'field',
   //字段初始值
   value: null,
   // label
-  label: '文本框'
+  label: '数量'
 
   inputnumber: {
-    // 设置计数器允许的最小值
-    min: -Infinity,
-    // 设置计数器允许的最大值
-    max: Infinity,
-    // 计数器步长
-    step: 1,
-    // 是否只能输入 step 的倍数
-    stepStrictly: false,
-    // 数值精度
-    precision: void 0,
-    // 是否使用控制按钮
-    controls: true,
-    // 控制按钮位置
-    controlsPosition: ''
+    // 支持所有el-input-number的相关属性，驼峰命名
   }
 }
 ```
 
-### 3. 单选框 ##
+### 3. 单选框 [demo](https://codepen.io/AdonisLau/pen/dyoQNeV?editors=0010) ##
 
 ```javascript
 {
@@ -189,8 +158,6 @@ Vue.component(McForm.name, McForm);
     ajax: {
       // 自定义请求函数，当该值不存在时，使用全局配置的request
       request: (data, params) => Promise.reolve([]),
-      // 是否自动获取
-      auto: true,
       // 请求链接
       url: '/url',
       // 拼在链接后的参数 值支持dx表达式
@@ -205,18 +172,27 @@ Vue.component(McForm.name, McForm);
       method: 'post',
       // 请求前判断，如果返回falsy，则不发送请求。 支持dx表达式
       beforeSend: 'dx:{{ !!$state.parentId }}',
-      // 使用后端接口返回的结果，根据该路径去获取选项数据，使用||做或处理
-      path: 'data.content || data.recordList'
+      // 使用后端接口返回的结果，根据该路径去获取选项数据
+      path: 'data.content'
     },
     // 包含的值 支持dx表达式
     include: [],
     // 排除的值 支持dx表达式
     exclude: []
   },
+  // 单选框相关配置
+  radio: {
+    // 是否显示边框
+    border: false,
+    // 按钮形式的 Radio 激活时的文本颜色
+    textColor: '#fff',
+    // 按钮形式的 Radio 激活时的填充色和边框色
+    fill: '#409EFF'
+  }
 }
 ```
 
-### 4. 多选框 ##
+### 4. 多选框 [demo](https://codepen.io/AdonisLau/pen/WNvYRaB) ##
 
 ```javascript
 {
@@ -240,8 +216,6 @@ Vue.component(McForm.name, McForm);
     ajax: {
       // 自定义请求函数，当该值不存在时，使用全局配置的request
       request: (data, params) => Promise.reolve([]),
-      // 是否自动获取
-      auto: true,
       // 请求链接
       url: '/url',
       // 拼在链接后的参数 值支持dx表达式
@@ -257,7 +231,7 @@ Vue.component(McForm.name, McForm);
       // 请求前判断，如果返回falsy，则不发送请求。 支持dx表达式
       beforeSend: 'dx:{{ !!$state.parentId }}',
       // 使用后端接口返回的结果，根据该路径去获取选项数据，使用||做或处理
-      path: 'data.content || data.recordList'
+      path: 'data.content'
     },
     // 包含的值
     include: [],
@@ -269,7 +243,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 5. 选择框 ##
+### 5. 选择框 [demo](https://codepen.io/AdonisLau/pen/OJVapMY) ##
 
 ```javascript
 {
@@ -291,10 +265,10 @@ Vue.component(McForm.name, McForm);
 
     // 异步请求获取选项，当该选项存在时，data无效
     ajax: {
+      // 开启远程搜索 值为请求参数名
+      remote: 'name',
       // 自定义请求函数，当该值不存在时，使用全局配置的request
       request: (data, params) => Promise.reolve([]),
-      // 是否自动获取
-      auto: true,
       // 请求链接
       url: '/url',
       // 拼在链接后的参数 值支持dx表达式
@@ -309,8 +283,8 @@ Vue.component(McForm.name, McForm);
       method: 'post',
       // 请求前判断，如果返回falsy，则不发送请求。 支持dx表达式
       beforeSend: 'dx:{{ !!$state.parentId }}',
-      // 使用后端接口返回的结果，根据该路径去获取选项数据，使用||做或处理
-      path: 'data.content || data.recordList'
+      // 使用后端接口返回的结果，根据该路径去获取选项数据
+      path: 'data.content'
     },
     // 包含的值
     include: [],
@@ -324,17 +298,12 @@ Vue.component(McForm.name, McForm);
   },
   // 针对选择框的配置
   select: {
-    // 是否可搜索
-    filterable: false,
-    // 是否对选
-    multiple: false,
-    // 是否为远程搜索
-    remote: false
+    // 支持所有el-select的相关属性，驼峰命名
   }
 }
 ```
 
-### 6. 日期时间选择器 ###
+### 6. 日期时间选择器 [demo](https://codepen.io/AdonisLau/pen/xxGQqOp) ###
 
 ```javascript
 {
@@ -348,31 +317,12 @@ Vue.component(McForm.name, McForm);
   label: '日期选择器',
   // 针对选择器的配置选项
   picker: {
-    // 文本框可输入
-    editable: false,
-    // 范围选择时开始日期的占位内容
-    startPlaceholder: '',
-    // 范围选择时结束日期的占位内容
-    endPlaceholder: '',
-    // 显示在输入框中的格式
-    format: null,
-    // 选择范围时的分隔符
-    rangeSeparator: '-',
-    // 值的展示格式化参数
-    valueFormat: 'timestamp',
-    // 当前时间日期选择器特有的选项
-    pickerOptions: null,
-    // 是否为时间范围选择，仅对<el-time-picker>有效
-    isRange: false,
-    // 是否使用箭头进行时间选择，仅对<el-time-picker>有效
-    arrowControl: false,
-  // 选中日期后的默认具体时刻 非范围选择时：string / 范围选择时：string[]
-  defaultTime: ['00:00:00', '00:00:00']
+    // 支持所有el-date-picker el-time-picker的相关属性，驼峰命名
   }
 }
 ```
 
-### 7.选择器 ###
+### 7.选择器 [demo](https://codepen.io/AdonisLau/pen/dyoQvNq) ###
 
 > 该组件是为了类似于`点击按钮，出现弹窗后选择`的类似需求，需要配合`setState`和`selector.event`使用。界面形式为左边`el-tag`，右边`el-button`
 
@@ -404,7 +354,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 8. 富文本 ###
+### 8. 富文本 [demo](https://codepen.io/AdonisLau/pen/ZEGmeXK) ###
 
 > 需要额外安装[mc-form-editor](https://github.com/AdonisLau/mc-form-editor)组件
 
@@ -448,21 +398,26 @@ Vue.component(McForm.name, McForm);
       '#f9963b',
       '#ffffff'
     ],
-
     zIndex: 9,
     // 使用后端接口返回的结果，根据该路径去获取图片上传路径
     path: 'content',
+    // 额外参数
+    data: {}
     // 上传接口
-    uploadURL: null,
+    action: null,
+    // 自定义请求函数，当该值不存在时，使用全局配置的request
+    request: (formData) => Promise.reolve({}),
     // 上传名称
     uploadFileName: 'file',
     uploadImgShowBase64: false,
     uploadImgMaxSize: 1 * 1024 * 1024,
+    // 成功回调判断
+    onSuccess: _ => ({ success: true })
   }
 }
 ```
 
-### 9. 文本范围 ###
+### 9. 文本框范围 [demo](https://codepen.io/AdonisLau/pen/rNVQmZR) ###
 
 ```javascript
 {
@@ -473,7 +428,7 @@ Vue.component(McForm.name, McForm);
   // 字段初始值
   value: null,
   // label
-  label: '文本范围',
+  label: '文本框范围',
   // 针对文本范围的配置选项
   inputrange: {
     // 范围选择时开始日期的占位内容
@@ -488,18 +443,18 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 10. 图片上传 ###
+### 10. 文件上传 [demo](https://codepen.io/AdonisLau/pen/MWwzmzZ) ###
 
 ```javascript
 {
-  // 图片上传
+  // 文件上传
   type: 'upload',
   // 字段
   field: 'field',
   // 字段初始值
   value: null,
   // label
-  label: '图片上传',
+  label: '文件上传',
   // 针对上传的配置选项
   upload: {
     // 接受上传的文件类型（thumbnail-mode 模式下此参数无效）
@@ -518,10 +473,12 @@ Vue.component(McForm.name, McForm);
     tip: '',
     // 文件列表的类型
     listType: 'picture-card',
-    // 文件大小限制
+    // 文件大小限制 单位为M
     limitSize: 1,
+    // 上传前校验
+    beforeUpload: blob => Promise.reject(),
     // 请求完成后执行的回调，返回一个对象。success: 是否上传成功，message: 失败后的提示语，uri: 文件上传路径
-    onSuccess: res => ({ success: res.code === 200, message: res.chnDesc, uri: res.content })
+    onSuccess: res => ({ success: res.code === 200, message: res.chnDesc, uri: res.content }),
   }
 }
 ```
@@ -596,7 +553,7 @@ Vue.component(McForm.name, McForm);
 }
 ```
 
-### 13. 自定义组件 ###
+### 13. 自定义组件 [demo](https://codepen.io/AdonisLau/pen/mdJQmgm) ###
 
 > 众所周知，产品的需求是相当骚的，为了实现某些骚操作，开放自定义组件的功能供开发者使用。
 
@@ -619,11 +576,9 @@ this.$emit('update:object', this.state, { name: '刘伟健' });
 this.$emit('update:array', this.state.users, 'push', { name: null, sex: null });
 ```
 
-> 当然，如果觉得以上写法麻烦，版本支持的情况下可以使用使用`inject: ['dangerousState']`，与`this.state`等价
-
 ## 修改默认配置 ##
 
-> 由于默认配置不太适合于其他项目，所以提供一个可修改默认配置的方法
+> 由于默认配置不太适合于其他项目，所以提供一个可修改默认配置的方法。PS：请在`mc-form`注册前设置。
 
 ```javascript
 import instance from '@http/instance';
@@ -644,7 +599,7 @@ export default function install(Vue) {
 }
 ```
 
-## 组件方法 ##
+## 组件实例方法 ##
 
 ```javascript
 {
@@ -669,10 +624,15 @@ export default function install(Vue) {
   /**
    * @param { String | Object } field 字段名
    * @param { Any } value 字段值
-   * @param { Boolean } 是否覆盖整个state
-   * @description 当field为Object时，value为isReset。默认情况下，是一一替换的，如果isReset为true，则整个覆盖
+   * @description 设置state
    */
-  setState(field, value, isReset) {},
+  setState(field, value) {},
+
+  /**
+   * @param { Object } state
+   * @description 替换state
+   */
+  replace(state) {},
 
   /**
    * @param { String } field 字段名
@@ -686,7 +646,7 @@ export default function install(Vue) {
    * @param { String } field 字段名
    * @param { String } prop 选项名: include, exclude, data
    * @param { Array } options
-   * @description 设置选择项
+   * @description 设置options.data 或者 tree.data
    */
   setOptions(field, prop, options) {},
 
@@ -697,7 +657,19 @@ export default function install(Vue) {
 }
 ```
 
-## 关于特殊符号拼接的字段 ##
+## 关于dx表达式 [demo](https://codepen.io/AdonisLau/pen/NWqEgqB) ##
+
+> dx表达式的存在是为了实现数据关联的效果。例如，当某字段为空时不允许编辑 `disabled: 'dx:{{ !$state.field }}'`，具有以下特点:
+
+* 格式如：'dx:{{ expression }}'
+* 特殊字段`$state`代表表单(`el-form`)的`model`对象
+* 不允许赋值的存在，比如 'dx{{ $state.name = 1 }}'是不合法的
+
+## 关于关联字段 [demo](https://codepen.io/AdonisLau/pen/NWqEgqB) ##
+
+> 关联字段的存在是为了设置关联的字段值，和刷新相关的选项。
+
+## 关于特殊符号拼接的字段 [demo](https://codepen.io/AdonisLau/pen/NWqEgqB) ##
 
 > 为了更方便地获取和设置`mc-form`的`state`，可以使用`symbol: true`开启以下特殊符号在字段中的特殊作用
 

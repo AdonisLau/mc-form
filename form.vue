@@ -541,22 +541,25 @@ export default {
     setOptions(field, prop, options) {
       let map = this._map_;
       let property = map && map[field];
+      let type = property && property.type;
       let props = ['data', 'include', 'exclude'];
 
-      if (!property || props.indexOf(prop) < 0 || !isOptions(property.type)) {
+      if (!type || props.indexOf(prop) < 0 || (type !== 'tree' && !isOptions(type))) {
         return;
       }
 
+      let opt = type === 'tree' ? property.tree : property.options;
+
       if (prop === 'data') {
-        this.$set(property.options, prop, deepClone(options));
+        this.$set(opt, prop, deepClone(options));
         return;
       }
 
       if (isDxExpr(options)) {
-        this.$set(property.options, prop, genFn(options));
+        this.$set(opt, prop, genFn(options));
       } else {
         options = deepClone(options);
-        this.$set(property.options, prop, _ => options);
+        this.$set(opt, prop, _ => options);
       }
     },
     /**

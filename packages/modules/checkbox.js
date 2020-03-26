@@ -63,6 +63,7 @@ export default {
             opts.checkAll && !!options.length && (
               <div class="mc-check-all">
                 <el-checkbox
+                  size={ ui.size }
                   border={ cb.border }
                   readonly={ this.readonly }
                   disabled={ this.disabled }

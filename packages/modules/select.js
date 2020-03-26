@@ -36,10 +36,10 @@ export default {
       let q = { };
       let method = (ajax.method || 'get').toLowerCase();
 
-      if (method === 'post') {
-        q.data = { [key]: kw };
-      } else {
+      if (method === 'get') {
         q.params = { [key]: kw };
+      } else {
+        q.data = { [key]: kw };
       }
 
       this.fetchOptions(q).catch(e => error('fetch options failed'));
