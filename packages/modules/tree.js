@@ -20,9 +20,10 @@ export default {
 
   methods: {
     notice(keys) {
-      this._equal = true;
+      this.equal = true;
       this.$emit('input', keys);
-      this.$nextTick(_ => (this._equal = false));
+      this.$emit('change', keys);
+      this.$nextTick(_ => (this.equal = false));
     },
 
     handleChange() {
@@ -36,7 +37,7 @@ export default {
 
     setCheckedKeys(keys) {
       // 来自自身的emit 不做修改 避免二次渲染
-      if (this._equal) {
+      if (this.equal) {
         return;
       }
 
@@ -100,7 +101,7 @@ export default {
   },
 
   mounted() {
-    this._equal = false;
+    this.equal = false;
     this.$nextTick(_ => this.setCheckedKeys(this.value));
   }
 };

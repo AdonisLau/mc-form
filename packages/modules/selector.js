@@ -38,6 +38,15 @@ export default {
     }
   },
 
+  watch: {
+    tags: {
+      immediate: true,
+      handler() {
+        this.$nextTick(this.triggerValidate);
+      }
+    }
+  },
+
   methods: {
     genValue(tags) {
       let val = null;
@@ -64,6 +73,10 @@ export default {
       let config = this.config;
 
       this.$emit('click', config.selector.event, { field: config.field, value: this.genValue(this.tags) });
+    },
+
+    triggerValidate() {
+      this.$refs.item.$emit('el.form.change');
     }
   },
 
@@ -81,7 +94,7 @@ export default {
       <el-col
         span={ ui.column }
         style={ ui.aequilate ? { width: `calc(${ui.column / 24 * 100 + '%'} - ${ui.labelWidth})` } : {} }>
-        <el-form-item prop={ config.field } labelWidth={ui.labelWidth} label={ config.label } class="mc-form-item">
+        <el-form-item prop={ config.field } labelWidth={ui.labelWidth} label={ config.label } class="mc-form-item" ref="item">
           {
             this.tags.map((tag, index) => {
               return (

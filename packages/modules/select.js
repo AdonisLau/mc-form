@@ -42,7 +42,7 @@ export default {
         q.data = { [key]: kw };
       }
 
-      this.fetchOptions(q).catch(e => error('fetch options failed'));
+      this.fetchOptions(q).catch(_ => error('fetch options failed'));
     }
   },
 
@@ -74,7 +74,10 @@ export default {
             clearable={ ui.clearable }
             placeholder={ ui.placeholder }
             remote-method={ this.handleRemote }
-            onInput={ value => this.$emit('input', value) }>
+            onInput={ value => this.$emit('input', value) }
+            onChange={ value => this.$emit('change', value) }
+            onBlur={ event => this.$emit('blur', event) }
+            onFocus={ event => this.$emit('focus', event) }>
             {
               options.map((option, index) => {
                 return (

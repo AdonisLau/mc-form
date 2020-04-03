@@ -68,13 +68,14 @@ export default {
 
       handler(fileList) {
         // 来自自身的emit 不做修改 避免二次渲染
-        if (this._equal) {
+        if (this.equal) {
           return;
         }
 
         // 空就清空
         if (!fileList) {
           this.files = [];
+          this.$nextTick(this.triggerValidate);
           return;
         }
 
@@ -101,6 +102,7 @@ export default {
         });
 
         this.files = files;
+        this.$nextTick(this.triggerValidate);
       }
     }
   },
@@ -117,19 +119,24 @@ export default {
         files = !files.length ? null : files[0].uri;
       }
 
-      this._equal = true;
+      this.equal = true;
 
       this.$emit('input', files);
+      this.$emit('change', files);
 
-      let component = this.$refs.item;
+      this.triggerValidate();
 
-      component.$emit('el.form.change');
-
-      this.$nextTick(_ => (this._equal = false));
+      this.$nextTick(_ => (this.equal = false));
     },
 
     handleRemove(_, files) {
       this.notice(files);
+    },
+
+    triggerValidate() {
+      let component = this.$refs.item;
+
+      component.$emit('el.form.change');
     },
 
     handleBeforeUpload(blob) {
@@ -201,7 +208,7 @@ export default {
   },
 
   created() {
-    this._equal = false;
+    this.equal = false;
   }
 };
 </script>

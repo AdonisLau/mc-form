@@ -30,7 +30,10 @@ export default {
             disabled={ this.disabled }
             clearable={ ui.clearable }
             placeholder={ ui.placeholder }
-            onInput={ value => this.$emit('input', value) }></el-time-picker>
+            onInput={ value => this.$emit('input', value) }
+            onChange={ value => this.$emit('change', value) }
+            onBlur={ component => this.$emit('blur', component) }
+            onFocus={ component => this.$emit('focus', component) }></el-time-picker>
         </el-form-item>
       </el-col>
     );

@@ -37,7 +37,8 @@ export default {
             readonly={ this.readonly }
             disabled={ this.disabled }
             textColor={ radio.textColor }
-            onInput={ value => this.$emit('input', value) }>
+            onInput={ value => this.$emit('input', value) }
+            onChange={ value => this.$emit('change', value) }>
             {
               options.map((option, index) => {
                 return (

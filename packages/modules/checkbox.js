@@ -29,6 +29,7 @@ export default {
 
     handleCheckChange(value) {
       this.$emit('input', value);
+      this.$emit('change', value);
     }
   },
 

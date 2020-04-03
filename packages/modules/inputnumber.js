@@ -29,7 +29,10 @@ export default {
             disabled={ this.disabled }
             clearable={ ui.clearable }
             placeholder={ ui.placeholder }
-            onInput={ value => this.$emit('input', value) }></el-input-number>
+            onInput={ value => this.$emit('input', value) }
+            onChange={ value => this.$emit('change', value) }
+            onBlur={ event => this.$emit('blur', event) }
+            onFocus={ event => this.$emit('focus', event) }></el-input-number>
         </el-form-item>
       </el-col>
     );

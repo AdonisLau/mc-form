@@ -19,7 +19,10 @@
         :is="componentMap[config.type]"
         :ref="config.field || '__no_field__'"
         :value="config.field ? state[config.field] : null"
-        @input="value => handleChange(config.field, value)"
+        @input="value => handleInput(config.field, value)"
+        @blur="value => emit('blur', config.field, value)"
+        @focus="value => emit('focus', config.field, value)"
+        @change="value => emit('native-change', config.field, value, true)"
         @click="handleClick"
         @update:array="updateArray"
         @update:object="updateObject"></component>
@@ -238,16 +241,19 @@ export default {
       }
     },
 
-    handleChange(field, value) {
+    emit(name, field, value, clone) {
+      if (this.$listeners[name]) {
+        this.$emit(name, { field, value: clone ? deepClone(value) : value });
+      }
+    },
+
+    handleInput(field, value) {
       if (!field) {
         return;
       }
 
       this.state[field] = value;
-      // 如果有事件绑定
-      if (this.$listeners.change) {
-        this.$emit('change', { field, value: deepClone(value) });
-      }
+      this.emit('change', field, value, true);
     },
     /**
      * 处理事件

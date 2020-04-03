@@ -38,7 +38,10 @@ export default {
             clearable={ ui.clearable }
             placeholder={ ui.placeholder }
             defaultTime={ this.isRange(type) ? defaultTime : (isArray(defaultTime) ? defaultTime[0] : defaultTime) }
-            onInput={ value => this.$emit('input', value) }></el-date-picker>
+            onInput={ value => this.$emit('input', value) }
+            onChange={ value => this.$emit('change', value) }
+            onBlur={ component => this.$emit('blur', component) }
+            onFocus={ component => this.$emit('focus', component) }></el-date-picker>
         </el-form-item>
       </el-col>
     );
