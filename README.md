@@ -657,6 +657,19 @@ export default function install(Vue) {
 }
 ```
 
+## 组件事件 ##
+
+> 组件事件只针对内置组件做通知，自定义组件不会触发。回调参数为一个对象: `{ field, value }`，value视element-ui的相关组件的相关事件的回调参数而定。
+
+* change: 值改变时触发，相当于`input`，历史原因，保留命名
+* native-change: 相当于`change`
+* blur: 失去焦点触发
+* focus: 获取焦点触发
+
+```html
+<mc-form @change="handleChange"></mc-form>
+```
+
 ## 关于dx表达式 [demo](https://codepen.io/AdonisLau/pen/NWqEgqB) ##
 
 > dx表达式的存在是为了实现数据关联的效果。例如，当某字段为空时不允许编辑 `disabled: 'dx:{{ !$state.field }}'`，具有以下特点:
@@ -681,7 +694,7 @@ export default function install(Vue) {
 
 ## 关于请求缓存 ##
 
-> 对于某些请求，例如获取省市区，我们希望能够缓存起来不做二次请求。考虑到`mc-form`不能进行全局缓存，所以便不支持。但是开发者者可以在`ajax.options.request`上做处理。以下为丸美实现全局缓存的例子，仅供参考：
+> 对于某些请求，例如获取省市区，我们希望能够缓存起来不做二次请求。考虑到`mc-form`不能进行全局缓存，所以便不支持。但是开发者者可以在`ajax.options.request`上做处理。以下为实现全局缓存的例子，仅供参考：
 
 ```javascript
 /**
@@ -718,7 +731,7 @@ export function createCaches(fn, prop) {
 }
 
 // 获取省市区
-const requestRegions = createCaches(data => $http.post('/base_data/areas:search', data.parentId === 'TOP' ? {} : data), 'parentId');
+const requestRegions = createCaches(data => $http.post('/area', data.parentId === 'TOP' ? {} : data), 'parentId');
 
 // config配置
 
