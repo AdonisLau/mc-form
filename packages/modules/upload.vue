@@ -136,7 +136,9 @@ export default {
     triggerValidate() {
       let component = this.$refs.item;
 
-      component.$emit('el.form.change');
+      if (component) {
+        component.$emit('el.form.change');
+      }
     },
 
     handleBeforeUpload(blob) {

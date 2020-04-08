@@ -76,7 +76,11 @@ export default {
     },
 
     triggerValidate() {
-      this.$refs.item.$emit('el.form.change');
+      let component = this.$refs.item;
+
+      if (component) {
+        component.$emit('el.form.change');
+      }
     }
   },
 
@@ -92,8 +96,7 @@ export default {
 
     return (
       <el-col
-        span={ ui.column }
-        style={ ui.aequilate ? { width: `calc(${ui.column / 24 * 100 + '%'} - ${ui.labelWidth})` } : {} }>
+        span={ ui.column }>
         <el-form-item prop={ config.field } labelWidth={ui.labelWidth} label={ config.label } class="mc-form-item" ref="item">
           {
             this.tags.map((tag, index) => {
