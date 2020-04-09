@@ -1,6 +1,6 @@
 {
   "name": "mc-form",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "a configurable form component base on element-ui",
   "main": "dist/mc-form.js",
   "directories": {

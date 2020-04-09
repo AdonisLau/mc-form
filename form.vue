@@ -30,8 +30,8 @@
   </el-form>
 </template>
 
-
 <script>
+import extend from './utils/extend';
 import COMPONENTS from './packages';
 import { getRequest } from './http/instance';
 import DEFAULT_CONFIGS, { componentMap } from './configs';
@@ -146,9 +146,9 @@ export default {
         return;
       }
 
-      this._watches_ || (this._watches_ = {});
+      this._watch_map_ || (this._watch_map_ = {});
 
-      let watches = this._watches_[field] = {};
+      let watches = this._watch_map_[field] = {};
 
       linkeds.forEach(linked => {
         watches[linked.path] = {
@@ -271,7 +271,7 @@ export default {
         return;
       }
 
-      let map = this._map_ || (this._map_ = {});
+      let map = this._prop_map_ || (this._prop_map_ = {});
 
       map[field] = property;
     },
@@ -361,7 +361,7 @@ export default {
     },
 
     processWatches() {
-      let watches = this._watches_;
+      let watches = this._watch_map_;
 
       if (!watches) {
         return;
@@ -378,8 +378,6 @@ export default {
           }
         );
       });
-
-      delete this._watches_;
     },
     /**
      * 操作数组
@@ -405,6 +403,8 @@ export default {
     notice(linkeds) {
       let state = this.state;
       let map = this._state_map_;
+
+      delete this._state_map_;
 
       Object.keys(linkeds).forEach(key => {
         let linked = linkeds[key];
@@ -465,6 +465,37 @@ export default {
     clear() {
       return this.$refs.form.clearValidate();
     },
+    /**
+     * 生成一个field -> true的map，应用于notice
+     * 防止多次setState，导致相关的field丢失，notice判断失败
+     */
+    genStateMap(state, map) {
+      let watches = this._watch_map_;
+
+      if (!watches) {
+        return;
+      }
+
+      if (this._state_map_) {
+        extend(this._state_map_, map);
+        return;
+      }
+
+      Object.keys(watches).some(key => {
+        if (map[key]) {
+          let newValue = state[key];
+          let oldValue = this.state[key];
+          /* eslint-disable no-self-compare */
+          if (oldValue === newValue || (newValue !== newValue && oldValue !== oldValue)) {
+            return;
+          }
+
+          this._state_map_ = map;
+
+          return true;
+        }
+      });
+    },
 
     /**
      * 对外api 设置state
@@ -486,11 +517,9 @@ export default {
       }
 
       let keys = Object.keys(state);
-      // 生成map 后续使用
-      this._state_map_ = keys.reduce((o, k) => (o[k] = true) && o, {});
+      let map = keys.reduce((o, k) => (o[k] = true) && o, {});
 
       if (reset) {
-        let map = this._state_map_;
         // 删掉不存在的
         Object.keys(this.state).forEach(key => {
           if (!map[key]) {
@@ -504,11 +533,11 @@ export default {
         // this.state = state;
       }
 
+      this.genStateMap(state, map);
+
       keys.forEach(key => {
         this.$set(this.state, key, state[key]);
       });
-
-      this.$nextTick(_ => (this._state_map_ = null));
     },
 
     replaceState(state) {
@@ -524,7 +553,7 @@ export default {
      * }
      */
     setEditable(field, prop, expr) {
-      let map = this._map_;
+      let map = this._prop_map_;
       let property = map && map[field];
       let props = ['disabled', 'readonly', 'hidden', 'closable'];
 
@@ -545,7 +574,7 @@ export default {
      * 对外api 设置options选项
      */
     setOptions(field, prop, options) {
-      let map = this._map_;
+      let map = this._prop_map_;
       let property = map && map[field];
       let type = property && property.type;
       let props = ['data', 'include', 'exclude'];
@@ -580,9 +609,6 @@ export default {
 
   created() {
     this.processWatches();
-
-    // 标识是否在setState
-    this._state_map_ = null;
   },
 
   components: {
