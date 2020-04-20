@@ -75,7 +75,6 @@ export default {
         // 空就清空
         if (!fileList) {
           this.files = [];
-          this.$nextTick(this.triggerValidate);
           return;
         }
 
@@ -102,7 +101,6 @@ export default {
         });
 
         this.files = files;
-        this.$nextTick(this.triggerValidate);
       }
     }
   },

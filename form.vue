@@ -404,8 +404,6 @@ export default {
       let state = this.state;
       let map = this._state_map_;
 
-      delete this._state_map_;
-
       Object.keys(linkeds).forEach(key => {
         let linked = linkeds[key];
         // 如果state存在的话，就不重新设置
@@ -433,6 +431,15 @@ export default {
           });
         }
       });
+
+      if (!this._noticed_ && map) {
+        this._noticed_ = true;
+
+        this.$nextTick(_ => {
+          this._noticed_ = false;
+          delete this._state_map_;
+        });
+      }
     },
     /**
      * 对外api 获取state
@@ -517,6 +524,7 @@ export default {
       }
 
       let keys = Object.keys(state);
+
       let map = keys.reduce((o, k) => (o[k] = true) && o, {});
 
       if (reset) {

@@ -40,9 +40,8 @@ export default {
 
   watch: {
     tags: {
-      immediate: true,
       handler() {
-        this.$nextTick(this.triggerValidate);
+        this.triggerValidate();
       }
     }
   },
