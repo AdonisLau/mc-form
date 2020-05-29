@@ -7,13 +7,90 @@ function isSymbolField(field) {
   return !isEmptyValue(field) && SYMBOL_RE.test(field);
 }
 
+/**
+ * @param { Object } state
+ * @param { String } field
+ * @description 判断是否存在，支持路径属性
+ */
+function has(state, field) {
+  let isPath = field.indexOf('>') >= 0;
+
+  if (!isPath) {
+    return hasOwn(state, field);
+  }
+
+  let fields = field.split('>');
+  let last = fields.pop();
+
+  for (let i = 0; i < fields.length; i++) {
+    let prop = fields[i];
+
+    if (!hasOwn(state, prop)) {
+      return false;
+    }
+
+    state = state[prop];
+
+    if (state == null) {
+      return false;
+    }
+  }
+
+  return hasOwn(state, last);
+}
+
+/**
+ * @param {String} field
+ * @param {Object} state
+ * @description 路径字段获取，例如state['a>b'] = state.a.b
+ */
+function get(state, field) {
+  let fields = field.split('>');
+  let last = fields.pop();
+  let data = state;
+
+  for (let i = 0; i < fields.length; i++) {
+    data = data[fields[i]];
+
+    if (isEmptyValue(data)) {
+      return null;
+    }
+  }
+
+  let value = data[last];
+
+  return isEmptyValue(value) ? null : value;
+}
+
+/**
+ * 处理state的路径字段
+ * 例如：state['a>b'] = 10 会被处理成 state.a = {b: 10};
+ */
+function set(state, field, value) {
+  let fields = field.split('>');
+  let last = fields.pop();
+  let data = state;
+
+  for (let i = 0; i < fields.length; i++) {
+    let prop = fields[i];
+
+    if (!isObject(data[prop]) && !isArray(data[prop])) {
+      data[prop] = {};
+    }
+
+    data = data[prop];
+  }
+
+  data[last] = value;
+}
+
 const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
   /**
    * @param {String} field
    * @param {Object} state
    * @description 范围字段设置，例如: state['a-b'] = [ state.a, state.b ]，主要应用于range相关的组件
    */
-  function(field, state) {
+  function(state, field) {
     let isRange = field.indexOf('-') > 0;
 
     if (!isRange) {
@@ -22,59 +99,18 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
 
     let fields = field.split('-');
 
-    if (!hasOwn(state, fields[0]) && !hasOwn(state, fields[1])) {
+    if (!has(state, fields[0]) && !has(state, fields[1])) {
       return true;
     }
 
-    let endValue = state[fields[1]];
-    let startValue = state[fields[0]];
+    let endValue = get(state, fields[1]);
+    let startValue = get(state, fields[0]);
 
     // 对于空值的 统一为空
     if (isEmptyValue(startValue) && isEmptyValue(endValue)) {
       state[field] = null;
     } else {
       state[field] = [ startValue, endValue ];
-    }
-
-    return true;
-  },
-
-  /**
-   * @param {String} field
-   * @param {Object} state
-   * @description 路径字段设置，例如state['a>b'] = state.a.b
-   */
-  function(field, state) {
-    let isPath = field.indexOf('>') > 0;
-
-    if (!isPath) {
-      return false;
-    }
-
-    let data = state;
-    let paths = field.split('>');
-
-    if (!hasOwn(state, paths[0])) {
-      return true;
-    }
-
-    let end = paths.length - 1;
-
-    for (let i = 0; i < end; i++) {
-      data = data[paths[i]];
-
-      if (isEmptyValue(data)) {
-        state[field] = null;
-        return true;
-      }
-    }
-
-    let value = data[paths[end]];
-
-    if (isEmptyValue(value)) {
-      state[field] = null;
-    } else {
-      state[field] = value;
     }
 
     return true;
@@ -86,7 +122,7 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
    * 例如字段 tagIds@tagNames, state = {tagIds: [1,2,3], tagNames: ['刘', '伟', '健']}
    * 会被设置为 state['tagIds@tagNames'] = [{id: 1, name: '刘'}, {id: 2, name: '伟'}, {id: 3, name: '健'}]
    */
-  function(field, state) {
+  function(state, field) {
     let isLinked = field.indexOf('@') > 0;
 
     if (!isLinked) {
@@ -95,12 +131,12 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
 
     let fields = field.split('@');
 
-    if (!hasOwn(state, fields[0]) && !hasOwn(state, fields[1])) {
+    if (!has(state, fields[0]) && !has(state, fields[1])) {
       return true;
     }
 
-    let ids = state[fields[0]];
-    let names = state[fields[1]];
+    let ids = get(state, fields[0]);
+    let names = get(state, fields[1]);
 
     if (isEmptyValue(ids) && isEmptyValue(names)) {
       state[field] = null;
@@ -128,7 +164,7 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
    * 例如字段 tagId&tagName, state = {tagId: 1, tagName: '刘伟健'}
    * 会被设置为 state['tagId&tagName'] = { id: 1, name: '刘伟健' }
    */
-  function(field, state) {
+  function(state, field) {
     let isLinked = field.indexOf('&') > 0;
 
     if (!isLinked) {
@@ -137,12 +173,12 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
 
     let fields = field.split('&');
 
-    if (!hasOwn(state, fields[0]) && !hasOwn(state, fields[1])) {
+    if (!has(state, fields[0]) && !has(state, fields[1])) {
       return true;
     }
 
-    let id = state[fields[0]];
-    let name = state[fields[1]];
+    let id = get(state, fields[0]);
+    let name = get(state, fields[1]);
 
     if (isEmptyValue(id) && isEmptyValue(name)) {
       state[field] = null;
@@ -155,6 +191,28 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
     state[field] = { id, name };
 
     return true;
+  },
+  /**
+   * @param {String} field
+   * @param {Object} state
+   * @description 路径字段设置，例如state['a>b'] = state.a.b
+   */
+  function(state, field) {
+    let isPath = field.indexOf('>') > 0;
+
+    if (!isPath) {
+      return false;
+    }
+
+    if (!has(state, field)) {
+      return true;
+    }
+
+    let value = get(state, field);
+
+    state[field] = isEmptyValue(value) ? null : value;
+
+    return true;
   }
 ];
 /**
@@ -165,7 +223,7 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
 export function setSymbolsFromNormals(state) {
   this.config.properties.forEach(({ field }) => {
     if (isSymbolField(field)) {
-      SET_SYMBOLS_FROM_NORMALS_INTERATORS.some(interator => interator(field, state));
+      SET_SYMBOLS_FROM_NORMALS_INTERATORS.some(interator => interator(state, field));
     }
   });
 
@@ -183,7 +241,7 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
    * @description 处理state的范围字段
    * 例如：state['a-b'] = [1, 2]， 会被处理成state.a = 1, state.b = 2
    */
-  function(field, state) {
+  function(state, field) {
     let isRange = field.indexOf('-') > 0;
 
     if (!isRange) {
@@ -198,40 +256,8 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
 
     let fields = field.split('-');
 
-    state[fields[0]] = ary[0];
-    state[fields[1]] = ary[1];
-
-    delete state[field];
-
-    return true;
-  },
-  /**
-   * 处理state的路径字段
-   * 例如：state['a>b'] = 10 会被处理成 state.a = {b: 10};
-   */
-  function(field, state) {
-    let isPath = field.indexOf('>') > 0;
-
-    if (!isPath) {
-      return false;
-    }
-
-    let data = state;
-    let value = state[field];
-    let paths = field.split('>');
-    let end = paths.length - 1;
-
-    for (let i = 0; i < end; i++) {
-      let path = paths[i];
-
-      if (!isObject(data[path]) && !isArray(data[path])) {
-        data[path] = {};
-      }
-
-      data = data[path];
-    }
-
-    data[paths[end]] = value;
+    set(state, fields[0], ary[0]);
+    set(state, fields[1], ary[1]);
 
     delete state[field];
 
@@ -245,7 +271,7 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
    * 例如 state['tagIds@tagNames'] = [{id: 1, name: '刘'}, {id: 2, name: '伟'}, {id: 3, name: '健'}]
    * 会被设置为 state.tagIds = [1,2,3], state.tagNames = ['刘', '伟', '健']
    */
-  function(field, state) {
+  function(state, field) {
     let isLinked = field.indexOf('@') > 0;
 
     if (!isLinked) {
@@ -259,8 +285,8 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
       ary = [];
     }
 
-    state[fields[0]] = ary.map(v => v.id);
-    state[fields[1]] = ary.map(v => v.name);
+    set(state, fields[0], ary.map(v => v.id));
+    set(state, fields[1], ary.map(v => v.name));
 
     delete state[field];
 
@@ -275,7 +301,7 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
    * 例如 state['tagId&tagName'] = { id: 1, name: '刘伟健' }
    * 会被设置为 state.tagId = 1, state.tagName = '刘伟健'
    */
-  function(field, state) {
+  function(state, field) {
     let isLinked = field.indexOf('&') > 0;
 
     if (!isLinked) {
@@ -289,13 +315,30 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
       object = { id: null, name: null };
     }
 
-    state[fields[0]] = object.id;
-    state[fields[1]] = object.name;
+    set(state, fields[0], object.id);
+    set(state, fields[1], object.name);
 
     delete state[field];
 
     return true;
-  }
+  },
+  /**
+   * 处理state的路径字段
+   * 例如：state['a>b'] = 10 会被处理成 state.a = {b: 10};
+   */
+  function(state, field) {
+    let isPath = field.indexOf('>') > 0;
+
+    if (!isPath) {
+      return false;
+    }
+
+    set(state, field, state[field]);
+
+    delete state[field];
+
+    return true;
+  },
 ];
 /**
  * @param {Object} state
@@ -304,7 +347,7 @@ const SET_NORMALS_FROM_SYMBOLS_INTERATORS = [
 export function setNormalsFromSymbols(state) {
   Object.keys(state).forEach(field => {
     if (isSymbolField(field)) {
-      SET_NORMALS_FROM_SYMBOLS_INTERATORS.some(interator => interator(field, state));
+      SET_NORMALS_FROM_SYMBOLS_INTERATORS.some(interator => interator(state, field));
     }
   });
 

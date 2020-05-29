@@ -542,9 +542,27 @@ export default {
       }
 
       this.genStateMap(state, map);
+      this.assignState(this.state, state);
+      /**
+       * 为什么不直接赋值？
+       * 有可能是对象。。。
+       */
+      // keys.forEach(key => {
+      //   this.$set(this.state, key, state[key]);
+      // });
+    },
 
-      keys.forEach(key => {
-        this.$set(this.state, key, state[key]);
+    assignState(dest, source) {
+      Object.keys(source).forEach(key => {
+        let destValue = dest[key];
+        let sourceValue = source[key];
+
+        if (isObject(destValue) && isObject(sourceValue)) {
+          this.assignState(destValue, sourceValue);
+          return;
+        }
+
+        this.$set(dest, key, sourceValue);
       });
     },
 
