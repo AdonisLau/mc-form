@@ -26,7 +26,6 @@ export default {
   methods: {
     handleRemote(kw) {
       if (!kw) {
-        this.options = [];
         return;
       }
 
