@@ -80,8 +80,6 @@ export default {
   },
 
   methods: {
-    setSymbolsFromNormals,
-    setNormalsFromSymbols,
     /**
      * set [field] to [value] if undefined
      */
@@ -449,7 +447,7 @@ export default {
         let state = deepClone(this.state);
 
         if (this.symbol) {
-          this.setNormalsFromSymbols(state);
+          setNormalsFromSymbols(state);
         }
 
         return state;
@@ -520,7 +518,7 @@ export default {
       reset = !!reset;
 
       if (this.symbol) {
-        this.setSymbolsFromNormals(state);
+        setSymbolsFromNormals(state, this.config.properties);
       }
 
       let keys = Object.keys(state);
@@ -622,6 +620,23 @@ export default {
         options = deepClone(options);
         this.$set(opt, prop, _ => options);
       }
+    },
+
+    /**
+     * 对外api 获取options选项
+     */
+    getOptions(field, prop) {
+      let map = this._prop_map_;
+      let property = map && map[field];
+      let type = property && property.type;
+
+      if (!type || prop !== 'data' || (type !== 'tree' && !isOptions(type))) {
+        return;
+      }
+
+      let component = this.$refs[field][0];
+
+      return component.getOptions();
     },
     /**
      * 对外api 重置表单

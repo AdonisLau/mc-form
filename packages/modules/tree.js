@@ -53,7 +53,7 @@ export default {
       keys.forEach(key => tree.setChecked(key, true, config.deep));
     },
 
-    getTreeData() {
+    getOptions() {
       let data = this.config.tree.data;
 
       // 处理store
@@ -72,7 +72,7 @@ export default {
 
     let config = this.config;
     let { ui, tree } = config;
-    let data = this.getTreeData();
+    let data = this.getOptions();
 
     return (
       <el-col

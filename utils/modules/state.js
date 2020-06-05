@@ -220,8 +220,8 @@ const SET_SYMBOLS_FROM_NORMALS_INTERATORS = [
  * @param {Object} state
  * @description 从普通字段中获取值并赋值到符号字段中
  */
-export function setSymbolsFromNormals(state) {
-  this.config.properties.forEach(({ field }) => {
+export function setSymbolsFromNormals(state, properties) {
+  properties.forEach(({ field }) => {
     if (isSymbolField(field)) {
       SET_SYMBOLS_FROM_NORMALS_INTERATORS.some(interator => interator(state, field));
     }

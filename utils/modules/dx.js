@@ -74,6 +74,24 @@ function returnNull() {
   return null;
 }
 
+function returnFalse() {
+  return false;
+}
+
+function returnTrue() {
+  return true;
+}
+// 复用一下吧 省点内存
+function genPrimitiveFn(expr) {
+  return expr === null ? returnNull : (expr === false ? returnFalse : (expr === true ? returnTrue : _ => expr));
+}
+
+function handleGenError(msg) {
+  error(msg);
+
+  return addExpr(returnNull, null);
+}
+
 /**
  * genFn辅助函数 为fn添加expr 后续判断expr一致的话将不再产生新函数
  */
@@ -91,29 +109,21 @@ function addExpr(fn, expr) {
  */
 export function genFn(expr) {
 
-  function handleError(msg) {
-    error(msg);
-
-    return addExpr(returnNull, null);
-  }
-
   if (!isDxExpr(expr)) {
     if (!isPrimitive(expr)) {
-      return handleError('reference value must use dx expression just like: "dx:{{ [] }}"');
+      return handleGenError('reference value must use dx expression just like: "dx:{{ [] }}"');
     }
 
-    return addExpr(function gen() {
-      return expr;
-    }, expr);
+    return addExpr(genPrimitiveFn(expr), expr);
   }
 
-  let reg = /\{\{([\s\S]+?)\}\}/;
+  let reg = /\{\{([\s\S]+)\}\}/;
 
   if (reg.test(expr)) {
     let exp = RegExp.$1.trim();
 
     if (!isValidDxExpr(exp)) {
-      return handleError(`invalid expression: ${expr}`);
+      return handleGenError(`invalid expression: ${expr}`);
     }
     /* eslint-disable no-new-func */
     try {
@@ -131,11 +141,11 @@ export function genFn(expr) {
         expr
       );
     } catch (e) {
-      return handleError(`invalid expression: ${expr}`);
+      return handleGenError(`invalid expression: ${expr}`);
     }
   }
 
-  return handleError(`invalid expression: ${expr}`);
+  return handleGenError(`invalid expression: ${expr}`);
 }
 
 export function genFns(object) {
@@ -158,8 +168,8 @@ const ESCAPE_RE = /[-.*+?^${}()|[\]/\\]/g;
 function escapeRE(raw) {
   return raw.replace(ESCAPE_RE, '\\$&');
 }
-
-const FN_EXP_RE = /^(?:[\w$_]+|\(([^)]*?)\))\s*=>|^function(?:\s+[\w$_]+)?\s*\(([^)]*?)\)/;
+// (a, b, c) => {} | function d(a, b, c) | d(a, b, c) {}
+const FN_EXP_RE = /^\(([^)]*?)\)\s*=>|^function(?:\s+[\w$_]+)?\s*\(([^)]*?)\)|^[\w$_]+\s*\(([^)]*?)\)\s*\{/;
 
 /**
  * @param {Function} validator
@@ -174,7 +184,7 @@ export function genStateProps(validator) {
     return ret;
   }
 
-  let args = RegExp.$1 || RegExp.$2;
+  let args = RegExp.$1 || RegExp.$2 || RegExp.$3;
 
   if (!args) {
     return ret;
