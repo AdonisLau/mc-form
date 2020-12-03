@@ -3,6 +3,7 @@ export let pickers = 'time|year|month|date|dates|week|datetime|datetimerange|dat
 
 export let componentMap = {
   tree: 'mc-tree',
+  color: 'mc-color',
   title: 'mc-title',
   radio: 'mc-radio',
   select: 'mc-select',
