@@ -57,7 +57,11 @@ export default {
     let select = config.select;
     let options = this.getOptions();
     let attrs = { attrs: deepClone(select) };
-
+    // multiple 另做处理
+    if (attrs.multiple) {
+      delete attrs.multiple;
+    }
+    
     return (
       <el-col
         span={ ui.column }>
@@ -73,6 +77,7 @@ export default {
             clearable={ ui.clearable }
             placeholder={ ui.placeholder }
             remote-method={ this.handleRemote }
+            multiple={ select.multiple(this.state) }
             onInput={ value => this.$emit('input', value) }
             onChange={ value => this.$emit('change', value) }
             onBlur={ event => this.$emit('blur', event) }

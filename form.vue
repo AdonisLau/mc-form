@@ -217,7 +217,10 @@ export default {
       }
     },
     /**
-     * 将disabled readonly hidden closable转换为函数
+     * 将全局的disabled readonly hidden
+     *  plaintext: closable
+     *  select: multiple
+     *  转换为函数
      */
     processReactives(property) {
       let ui = property.ui;
@@ -236,6 +239,16 @@ export default {
 
       if (plaintext) {
         plaintext.text = genFn(plaintext.text);
+      }
+
+      // type = select 添加多选
+      if (property.type === 'select') {
+        let select = property.select;
+        if (select) {
+          ['multiple'].forEach((prop) => {
+            select[prop] = genFn(select[prop] || false);
+          });
+        }
       }
     },
 
