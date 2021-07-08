@@ -479,6 +479,7 @@ Vue.component(McForm.name, McForm);
     beforeUpload: blob => Promise.reject(),
     // 请求完成后执行的回调，返回一个对象。success: 是否上传成功，message: 失败后的提示语，uri: 文件上传路径
     onSuccess: res => ({ success: res.code === 200, message: res.chnDesc, uri: res.content }),
+    urlPrefix: '', // 上传回显示资源，需要拼上的前缀
   }
 }
 ```

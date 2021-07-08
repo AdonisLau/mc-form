@@ -12,7 +12,7 @@
         :headers="config.upload.headers"
         :disabled="disabled || readonly"
         :show-file-list="true"
-        :file-list="files"
+        :file-list="showFiles"
         :multiple="multiple"
         :name="config.upload.name"
         :list-type="config.upload.listType"
@@ -60,6 +60,15 @@ export default {
     multiple() {
       return this.config.upload.multiple;
     },
+    showFiles() {
+      let files = this.files;
+      if (this.config.upload.urlPrefix) {
+        files.map(item => {
+          item.url = this.config.upload.urlPrefix + item.url;
+        });
+      }
+      return files;
+    }
   },
 
   watch: {
