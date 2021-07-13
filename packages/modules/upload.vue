@@ -64,7 +64,9 @@ export default {
       let files = this.files;
       if (this.config.upload.urlPrefix) {
         files.map(item => {
-          item.url = this.config.upload.urlPrefix + item.url;
+          if (item.url.search(/https?:\/\//i) === -1) {
+            item.url = this.config.upload.urlPrefix + item.url;
+          }
         });
       }
       return files;
